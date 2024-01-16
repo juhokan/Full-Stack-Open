@@ -27,18 +27,29 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0))
 
   const selectIndex = () => {
     const min = Math.ceil(0);
     const max = Math.floor(anecdotes.length - 1);
     const newIndex = Math.floor(Math.random() * (max - min + 1)) + min
-    console.log(newIndex);
+    console.log(newIndex)
     setSelected(newIndex)
+  }
+
+  const handleVote = ({index}) => {
+    console.log(points[index]);
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+    console.log(points[index]);
   }
 
   return (
     <div>
       <NewAnecdote anecdote={anecdotes[selected]}/>
+      <p>has {points[selected]} votes</p>
+      <Button handleClick={handleVote} text={'vote'}/>
       <Button handleClick={selectIndex} text='next anecdote'/>
     </div>
   )
