@@ -6,6 +6,17 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
 
+const Statistics = ({good, neutral, bad, total, average}) => (
+  <div>
+    <p>good {good}</p>
+    <p>neutral {neutral}</p>
+    <p>bad {bad}</p>
+    <p>all {total}</p>
+    <p>average {average/total}</p>
+    <p>positive {good/total*100}%</p>
+  </div>
+)
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const headerFeedback = 'give feedback'
@@ -43,12 +54,7 @@ const App = () => {
       <Button handleClick={handleNeutral} text={'neutral'}/>
       <Button handleClick={handleBad} text={'bad'}/>
       <h1>{headerStatistics}</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {total}</p>
-      <p>average {average/total}</p>
-      <p>positive {good/total*100}%</p>
+      <Statistics good={good} neutral={neutral} bad={bad} average={average} total={total}/>
     </div>
   )
 }
