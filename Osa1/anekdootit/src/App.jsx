@@ -14,6 +14,20 @@ const NewAnecdote = ({anecdote}) => {
   )
 }
 
+function mostVoted(points) {
+  let mostVotedIndex = 0;
+  let largestNum = points[0]
+
+  for (let i = 1; i < points.length; i++) {
+      if (points[i] > largestNum) {
+          mostVotedIndex = i;
+          largestNum = points[i]
+      }
+  }
+  return mostVotedIndex;
+}
+
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -33,24 +47,24 @@ const App = () => {
     const min = Math.ceil(0);
     const max = Math.floor(anecdotes.length - 1);
     const newIndex = Math.floor(Math.random() * (max - min + 1)) + min
-    console.log(newIndex)
     setSelected(newIndex)
   }
 
   const handleVote = ({index}) => {
-    console.log(points[index]);
     const newPoints = [...points];
     newPoints[selected] += 1;
     setPoints(newPoints);
-    console.log(points[index]);
   }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <NewAnecdote anecdote={anecdotes[selected]}/>
       <p>has {points[selected]} votes</p>
       <Button handleClick={handleVote} text={'vote'}/>
       <Button handleClick={selectIndex} text='next anecdote'/>
+      <h1>Anecdote with most votes</h1>
+      <NewAnecdote anecdote={anecdotes[mostVoted(points)]}/>
     </div>
   )
 }
