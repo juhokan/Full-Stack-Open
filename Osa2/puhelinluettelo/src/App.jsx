@@ -2,19 +2,41 @@
 import { useState, useEffect } from 'react'
 import numberService from '/./services/numbers.js'
 
-const Person = ({ person }) => (
-  <p>{person.name} {person.number}</p>
+const Person = ({ person, setPersons }) => (
+  <p>
+    {person.name}
+    {person.number}
+    <DeleteButton person={person} setPersons={setPersons}/>
+  </p>
 );
 
-const PersonsMap = ({ persons, filter }) => {
+const DeleteButton = ({ person, setPersons }) => {
+  const handleDelete = () => {
+    numberService.deleteVal(person)
+      .then(response => {
+        setPersons(prevPersons => prevPersons.filter(p => p.id !== response.data.id));
+      })
+      .catch(error => {
+        console.error('Error deleting person:', error);
+      });
+  };
+
+  return (
+    <button onClick={handleDelete}>
+      delete
+    </button>
+  );
+};
+
+const PersonsMap = ({ persons, setPersons, filter }) => {
   return (
     filter === '' ? (
       persons.map(person => (
-        <Person key={person.name} person={person} />
+        <Person key={person.name} person={person} setPersons={setPersons} />
       ))
     ) : (
       persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-        <Person key={person.name} person={person} />
+        <Person key={person.name} person={person} setPersons={setPersons}/>
       ))
     )
   );
