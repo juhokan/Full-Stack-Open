@@ -5,6 +5,40 @@ const Person = ({ person }) => (
   <p>{person.name} {person.number}</p>
 );
 
+const PersonsMap = ({ persons, filter }) => (
+  filter === '' ? (
+    persons.map(person => (
+      <Person key={person.name} person={person} />
+    ))
+  ) : (
+    persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
+      <Person key={person.name} person={person} />
+    ))
+  )
+);
+
+const Filter = ({ filter, handleFilter }) => (
+  <form>
+    <div>
+      filter shown with<input value={filter} onChange={handleFilter} />
+    </div>
+  </form>
+);
+
+const AddInformation = ({ addNumber, newName, handleNameChange, newNumber, handleNumberChange }) => (
+  <form onSubmit={addNumber}>
+    <div>
+      name: <input value={newName} onChange={handleNameChange} />
+    </div>
+    <div>
+      number: <input value={newNumber} onChange={handleNumberChange} />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+);
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -52,34 +86,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          filter shown with<input value={filter} onChange={handleFilter} />
-        </div>
-      </form>
+      <Filter filter={filter} handleFilter={handleFilter} />
 
       <h2>add a new</h2>
-      <form onSubmit={addNumber}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <AddInformation
+        addNumber={addNumber}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange} />
+        
       <h2>Numbers</h2>
-      {filter === '' ? (
-        persons.map(person => (
-          <Person key={person.name} person={person} />
-        ))
-      ) : (
-        persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-          <Person key={person.name} person={person} />
-        ))
-      )}
+      <PersonsMap persons={persons} filter={filter}/>
     </div>
   )
 
