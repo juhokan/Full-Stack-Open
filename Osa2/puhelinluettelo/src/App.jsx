@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import numberService from '/./services/numbers.js'
 
 const Person = ({ person }) => (
   <p>{person.name} {person.number}</p>
@@ -53,7 +53,7 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    numberService.getAll()
       .then(response => {
         setPersons(response.data);
       })
@@ -71,7 +71,7 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`);
     } else {
-      setPersons([...persons, personsObject]);
+      numberService.create(personsObject).then(response => {setPersons(persons.concat(response.data))})
       setNewName('');
       setNewNumber('');
     }
