@@ -1,43 +1,66 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Person = ({ person }) => (
   <p>{person.name} {person.number}</p>
 );
 
-const PersonsMap = ({ persons, filter }) => (
-  filter === '' ? (
-    persons.map(person => (
-      <Person key={person.name} person={person} />
-    ))
-  ) : (
-    persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-      <Person key={person.name} person={person} />
-    ))
+const PersonsMap = ({ filter }) => {
+  const [persons, setPersons] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching persons:', error);
+      });
+  }, []);
+
+  return (
+    <>
+      {persons.length > 0 && (
+        filter === '' ? (
+          persons.map(person => (
+            <Person key={person.name} person={person} />
+          ))
+        ) : (
+          persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
+            <Person key={person.name} person={person} />
+          ))
+        )
+      )}
+    </>
+  );
+};
+
+const Filter = ({ filter, handleFilter }) => {
+  return (
+    <form>
+      <div>
+        filter shown with<input value={filter} onChange={handleFilter} />
+      </div>
+    </form>
   )
-);
+}
 
-const Filter = ({ filter, handleFilter }) => (
-  <form>
-    <div>
-      filter shown with<input value={filter} onChange={handleFilter} />
-    </div>
-  </form>
-);
-
-const AddInformation = ({ addNumber, newName, handleNameChange, newNumber, handleNumberChange }) => (
-  <form onSubmit={addNumber}>
-    <div>
-      name: <input value={newName} onChange={handleNameChange} />
-    </div>
-    <div>
-      number: <input value={newNumber} onChange={handleNumberChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-);
+const AddInformation = ({ addNumber, newName, handleNameChange, newNumber, handleNumberChange }) => {
+  return (
+    <form onSubmit={addNumber}>
+      <div>
+        name: <input value={newName} onChange={handleNameChange} />
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={handleNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([
