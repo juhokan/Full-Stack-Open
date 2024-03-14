@@ -6,33 +6,17 @@ const Person = ({ person }) => (
   <p>{person.name} {person.number}</p>
 );
 
-const PersonsMap = ({ filter }) => {
-  const [persons, setPersons] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching persons:', error);
-      });
-  }, []);
-
+const PersonsMap = ({ persons, filter }) => {
   return (
-    <>
-      {persons.length > 0 && (
-        filter === '' ? (
-          persons.map(person => (
-            <Person key={person.name} person={person} />
-          ))
-        ) : (
-          persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-            <Person key={person.name} person={person} />
-          ))
-        )
-      )}
-    </>
+    filter === '' ? (
+      persons.map(person => (
+        <Person key={person.name} person={person} />
+      ))
+    ) : (
+      persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
+        <Person key={person.name} person={person} />
+      ))
+    )
   );
 };
 
@@ -63,48 +47,48 @@ const AddInformation = ({ addNumber, newName, handleNameChange, newNumber, handl
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
 
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching persons:', error);
+      });
+  }, []);
 
   const addNumber = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const personsObject = {
       name: newName,
       number: newNumber
-    }
+    };
     if (persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`);
+    } else {
+      setPersons([...persons, personsObject]);
+      setNewName('');
+      setNewNumber('');
     }
-    else {
-      setPersons(persons.concat(personsObject))
-      setNewName('') 
-    }
-
-  }
+  };
 
   const handleFilter = (event) => {
     const value = event.target.value;
-    console.log(value)
     setFilter(value);
-  }
+  };
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
-    setNewName(event.target.value)
-  }
+    setNewName(event.target.value);
+  };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
-    setNewNumber(event.target.value)
-  }
+    setNewNumber(event.target.value);
+  };
 
   return (
     <div>
@@ -117,13 +101,13 @@ const App = () => {
         newName={newName}
         handleNameChange={handleNameChange}
         newNumber={newNumber}
-        handleNumberChange={handleNumberChange} />
+        handleNumberChange={handleNumberChange}
+      />
         
       <h2>Numbers</h2>
-      <PersonsMap persons={persons} filter={filter}/>
+      <PersonsMap persons={persons} filter={filter} />
     </div>
-  )
+  );
+};
 
-}
-
-export default App
+export default App;
