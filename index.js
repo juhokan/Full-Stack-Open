@@ -1,6 +1,9 @@
 const express = require('express')
 const morgan = require('morgan');
 const app = express()
+const cors = require('cors')
+
+app.use(cors())
 
 const generateId = () => {
     const maxId = persons.length > 0
