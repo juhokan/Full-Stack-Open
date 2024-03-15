@@ -79,13 +79,28 @@ const App = () => {
       name: newName,
       number: newNumber
     };
-    if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+  
+    const existingPerson = persons.find(person => person.name === newName);
+    
+    if (existingPerson) {
+      numberService.update(existingPerson.id, personsObject)
+        .then(response => {
+          setPersons(persons.map(person => person.id === existingPerson.id ? response.data : person));
+        })
+        .catch(error => {
+          console.error('Error updating person:', error);
+        });
     } else {
-      numberService.create(personsObject).then(response => {setPersons(persons.concat(response.data))})
-      setNewName('');
-      setNewNumber('');
+      numberService.create(personsObject)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+        })
+        .catch(error => {
+          console.error('Error creating person:', error);
+        });
     }
+    setNewName('');
+    setNewNumber('');
   };
 
   const handleFilter = (event) => {
