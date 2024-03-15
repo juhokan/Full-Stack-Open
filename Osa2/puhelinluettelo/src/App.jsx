@@ -12,9 +12,12 @@ const Person = ({ person, setPersons }) => (
 
 const DeleteButton = ({ person, setPersons }) => {
   const handleDelete = () => {
-    numberService.deleteVal(person)
+    numberService.deleteVal(person.id)
+      .then(() => {
+        return numberService.getAll();
+      })
       .then(response => {
-        setPersons(prevPersons => prevPersons.filter(p => p.id !== response.data.id));
+        setPersons(response.data);
       })
       .catch(error => {
         console.error('Error deleting person:', error);
@@ -25,20 +28,6 @@ const DeleteButton = ({ person, setPersons }) => {
     <button onClick={handleDelete}>
       delete
     </button>
-  );
-};
-
-const PersonsMap = ({ persons, setPersons, filter }) => {
-  return (
-    filter === '' ? (
-      persons.map(person => (
-        <Person key={person.name} person={person} setPersons={setPersons} />
-      ))
-    ) : (
-      persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-        <Person key={person.name} person={person} setPersons={setPersons}/>
-      ))
-    )
   );
 };
 
@@ -116,8 +105,8 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} handleFilter={handleFilter} />
-
-      <h2>add a new</h2>
+  
+      <h2>Add a New</h2>
       <AddInformation
         addNumber={addNumber}
         newName={newName}
@@ -127,7 +116,15 @@ const App = () => {
       />
         
       <h2>Numbers</h2>
-      <PersonsMap persons={persons} filter={filter} />
+      {filter === '' ? (
+        persons.map(person => (
+          <Person key={person.name} person={person} setPersons={setPersons} />
+        ))
+      ) : (
+        persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
+          <Person key={person.name} person={person} setPersons={setPersons}/>
+        ))
+      )}
     </div>
   );
 };
