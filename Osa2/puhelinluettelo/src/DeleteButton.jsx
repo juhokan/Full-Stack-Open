@@ -20,7 +20,7 @@ const DeleteButton = ({ person, setPersons, setErrorMessage }) => {
         .catch(error => {
           console.error('Error deleting person:', error);
           setErrorMessage(
-            `Error deleting person '${person.name}'`
+            `Information of '${person.name} had already been deleted'`
           );
           setTimeout(() => {
             setErrorMessage(null);
