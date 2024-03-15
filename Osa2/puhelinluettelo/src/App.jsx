@@ -1,19 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import numberService from '/./services/numbers.js'
+import DeleteButton from './DeleteButton'
+import Notification from './Notification'
 import '/./index.css'
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
 
-  return (
-    <div className="error">
-      {message}
-    </div>
-  )
-}
 
 const Person = ({ person, setPersons, setErrorMessage }) => (
   <p>
@@ -22,39 +14,6 @@ const Person = ({ person, setPersons, setErrorMessage }) => (
     <DeleteButton person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
   </p>
 );
-
-const DeleteButton = ({ person, setPersons, setErrorMessage }) => {
-  const handleDelete = () => {
-    numberService.deleteVal(person.id)
-      .then(() => {
-        return numberService.getAll();
-      })
-      .then(response => {
-        setPersons(response.data);
-        setErrorMessage(
-          `Person '${person.name}' was deleted`
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 2000);
-      })
-      .catch(error => {
-        console.error('Error deleting person:', error);
-        setErrorMessage(
-          `Error deleting person '${person.name}'`
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 2000);
-      });
-  };
-
-  return (
-    <button onClick={handleDelete}>
-      delete
-    </button>
-  );
-};
 
 const Filter = ({ filter, handleFilter }) => {
   return (
