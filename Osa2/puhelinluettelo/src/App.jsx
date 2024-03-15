@@ -1,16 +1,29 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import numberService from '/./services/numbers.js'
+import '/./index.css'
 
-const Person = ({ person, setPersons }) => (
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
+const Person = ({ person, setPersons, setErrorMessage }) => (
   <p>
     {person.name}
     {person.number}
-    <DeleteButton person={person} setPersons={setPersons}/>
+    <DeleteButton person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
   </p>
 );
 
-const DeleteButton = ({ person, setPersons }) => {
+const DeleteButton = ({ person, setPersons, setErrorMessage }) => {
   const handleDelete = () => {
     numberService.deleteVal(person.id)
       .then(() => {
@@ -18,9 +31,21 @@ const DeleteButton = ({ person, setPersons }) => {
       })
       .then(response => {
         setPersons(response.data);
+        setErrorMessage(
+          `Person '${person.name}' was deleted`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2000);
       })
       .catch(error => {
         console.error('Error deleting person:', error);
+        setErrorMessage(
+          `Error deleting person '${person.name}'`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2000);
       });
   };
 
@@ -62,6 +87,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     numberService.getAll()
@@ -87,16 +113,25 @@ const App = () => {
         .then(response => {
           setPersons(persons.map(person => person.id === existingPerson.id ? response.data : person));
         })
-        .catch(error => {
-          console.error('Error updating person:', error);
+        .then(() => {
+          setErrorMessage(
+            `Persons '${newName}' number was updated`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 2000)
         });
     } else {
       numberService.create(personsObject)
         .then(response => {
           setPersons(persons.concat(response.data));
-        })
-        .catch(error => {
-          console.error('Error creating person:', error);
+        }).then(() => {
+          setErrorMessage(
+            `Persons '${newName}' number was added`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 2000)
         });
     }
     setNewName('');
@@ -119,6 +154,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage}/>
       <Filter filter={filter} handleFilter={handleFilter} />
   
       <h2>Add a New</h2>
@@ -133,11 +169,11 @@ const App = () => {
       <h2>Numbers</h2>
       {filter === '' ? (
         persons.map(person => (
-          <Person key={person.name} person={person} setPersons={setPersons} />
+          <Person key={person.name} person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
         ))
       ) : (
         persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => (
-          <Person key={person.name} person={person} setPersons={setPersons}/>
+          <Person key={person.name} person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
         ))
       )}
     </div>
