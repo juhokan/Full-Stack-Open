@@ -32,10 +32,20 @@ const personSchema = new mongoose.Schema({
         minlength: 3,
         required: true,
     },
-    number: String,
-  })
-  
+    number: {
+        type: String,
+        validate: {
+            validator: isValidPhoneNumber
+        },
+        required: true,
+    },
+});
 const Person = mongoose.model('Person', personSchema)
+
+
+function isValidPhoneNumber(number) {
+    return /^\d{2,3}-\d{7,}$/.test(number);
+}
 
 
 morgan.token('data', (req) => {
@@ -126,8 +136,14 @@ app.put('/api/persons/:id', (request, response, next) => {
     const id = request.params.id;
     const body = request.body;
 
+    // Check if the number is missing
     if (!body.number) {
         return response.status(400).json({ error: 'Number is missing' });
+    }
+
+    // Check if the number is in the correct format
+    if (!isValidPhoneNumber(body.number)) {
+        return response.status(400).json({ error: 'Invalid phone number format' });
     }
 
     const updatedPerson = {
@@ -144,6 +160,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         })
         .catch(error => next(error));
 });
+
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message);
