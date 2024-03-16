@@ -74,32 +74,45 @@ const App = () => {
     const existingPerson = persons.find(person => person.name === newName);
     
     if (existingPerson) {
-      console.log("found")
+      console.log("found");
       numberService.update(existingPerson._id, personsObject)
         .then(response => {
           setPersons(persons.map(person => person._id === existingPerson._id ? response.data : person));
         })
         .then(() => {
           setErrorMessage(
-            `Persons '${newName}' number was updated`
-          )
+            `Person '${newName}' number was updated`
+          );
           setTimeout(() => {
-            setErrorMessage(null)
-          }, 2000)
-        });
+            setErrorMessage(null);
+          }, 2000);
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
+        });    
     } else {
       numberService.create(personsObject)
         .then(response => {
           setPersons(persons.concat(response.data));
-        }).then(() => {
+        })
+        .then(() => {
           setErrorMessage(
-            `Persons '${newName}' number was added`
-          )
+            `Person '${newName}' number was added`
+          );
           setTimeout(() => {
-            setErrorMessage(null)
-          }, 2000)
+            setErrorMessage(null);
+          }, 2000);
+        })
+        .catch(error => {
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
         });
-    }
+    }    
     setNewName('');
     setNewNumber('');
   };
