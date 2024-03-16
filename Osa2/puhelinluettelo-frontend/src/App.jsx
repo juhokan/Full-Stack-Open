@@ -7,13 +7,19 @@ import '/./index.css'
 
 
 
-const Person = ({ person, setPersons, setErrorMessage }) => (
-  <p>
-    {person.name}
-    {person.number}
-    <DeleteButton person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
-  </p>
-);
+const Person = ({ person, setPersons, setErrorMessage }) => {
+  if (!person) {
+    return null;
+  }
+
+  return (
+    <p>
+      {person.name} {person.number}
+      <DeleteButton person={person} setPersons={setPersons} setErrorMessage={setErrorMessage} />
+    </p>
+  );
+};
+
 
 const Filter = ({ filter, handleFilter }) => {
   return (
@@ -68,9 +74,10 @@ const App = () => {
     const existingPerson = persons.find(person => person.name === newName);
     
     if (existingPerson) {
-      numberService.update(existingPerson.id, personsObject)
+      console.log("found")
+      numberService.update(existingPerson._id, personsObject)
         .then(response => {
-          setPersons(persons.map(person => person.id === existingPerson.id ? response.data : person));
+          setPersons(persons.map(person => person._id === existingPerson._id ? response.data : person));
         })
         .then(() => {
           setErrorMessage(

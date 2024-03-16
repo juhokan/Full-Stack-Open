@@ -4,7 +4,7 @@ import numberService from '/./services/numbers.js'
 
 const DeleteButton = ({ person, setPersons, setErrorMessage }) => {
     const handleDelete = () => {
-      numberService.deleteVal(person.id)
+      numberService.deleteVal(person._id)
         .then(() => {
           return numberService.getAll();
         })
