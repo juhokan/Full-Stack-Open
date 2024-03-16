@@ -27,7 +27,11 @@ mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minlength: 3,
+        required: true,
+    },
     number: String,
   })
   
@@ -147,8 +151,8 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({ error: 'Malformatted id' });
     }
-    if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message });
+    else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
     response.status(500).json({ error: 'Internal server error' });
 };
