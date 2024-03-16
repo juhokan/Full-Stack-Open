@@ -9,8 +9,19 @@ const password = process.env.PASSWORD;
 
 const url = `mongodb+srv://juhokan:${password}@puhelinluettelo-db.mutnh94.mongodb.net/personsApp?retryWrites=true&w=majority&appName=puhelinluettelo-db`;
 
-app.use(cors())
+
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+  }
+
 app.use(express.static('dist'))
+app.use(express.json())
+app.use(requestLogger)
+app.use(cors())
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
@@ -22,7 +33,6 @@ const personSchema = new mongoose.Schema({
   
 const Person = mongoose.model('Person', personSchema)
 
-app.use(express.json());
 
 morgan.token('data', (req) => {
    if (req.method === 'POST') {
@@ -33,28 +43,32 @@ morgan.token('data', (req) => {
 
 app.use(morgan(':method :url :status :response-time ms :data'));
 
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
-
 app.get('/info', (request, response) => {
-    const dateHeader = request.headers['date'];
-    const currentDate = dateHeader ? new Date(dateHeader) : new Date();
-    const dateTime = currentDate.toLocaleString('en-EU', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZoneName: 'short'
-    });
-    const info = `
-        <p>phonebook has info for ${persons.length} people</p>
-        <p>${dateTime}</p>
-    `;
-    response.send(`<div>${info}</div>`);
+    Person.find({})
+        .then(persons => {
+            const count = persons.length;
+            const dateHeader = request.headers['date'];
+            const currentDate = dateHeader ? new Date(dateHeader) : new Date();
+            const dateTime = currentDate.toLocaleString('en-EU', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                timeZoneName: 'short'
+            });
+            const info = `
+                <p>phonebook has info for ${count} people</p>
+                <p>${dateTime}</p>
+            `;
+            response.send(`<div>${info}</div>`);
+        })
+        .catch(error => {
+            console.error('Error retrieving persons:', error);
+            response.status(500).send('Internal Server Error');
+        });
 });
 
 
@@ -103,6 +117,51 @@ app.delete('/api/persons/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id;
+    const body = request.body;
+
+    if (!body.number) {
+        return response.status(400).json({ error: 'Number is missing' });
+    }
+
+    const updatedPerson = {
+        number: body.number
+    };
+
+    Person.findByIdAndUpdate(id, updatedPerson, { new: true })
+        .then(updatedPerson => {
+            if (updatedPerson) {
+                response.json(updatedPerson);
+            } else {
+                response.status(404).json({ error: 'Person not found' });
+            }
+        })
+        .catch(error => next(error));
+});
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message);
+
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+        return response.status(400).send({ error: 'Malformatted id' });
+    }
+    if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message });
+    }
+    response.status(500).json({ error: 'Internal server error' });
+};
+
+
+app.use(errorHandler);
+
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'Unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
