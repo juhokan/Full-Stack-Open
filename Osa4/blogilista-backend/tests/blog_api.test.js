@@ -142,6 +142,47 @@ test('POST /api/blogs check empty url returns 400 Bad request', async () => {
     .expect(400)
 })
 
+test('DELETE /api/blogs/:id deletes a blog post', async () => {
+  const blogsAtStart = await Blog.find({});
+  const blogToDelete = blogsAtStart[0];
+
+  await api
+    .delete(`/api/blogs/${blogToDelete._id}`)
+    .expect(204);
+
+  const blogsAtEnd = await Blog.find({});
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1);
+
+  const titles = blogsAtEnd.map(blog => blog.title);
+  assert(!titles.includes(blogToDelete.title));
+});
+
+test('PUT /api/blogs/:id updates a blog post', async () => {
+  const blogsAtStart = await Blog.find({});
+  const blogToUpdate = blogsAtStart[0];
+
+  const updatedBlog = {
+    title: "Updated Title",
+    author: "Updated Author",
+    url: "http://updated-url.com",
+    likes: 20
+  };
+
+  await api
+    .put(`/api/blogs/${blogToUpdate._id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await Blog.find({});
+  const updatedBlogInDb = blogsAtEnd.find(blog => blog._id.toString() === blogToUpdate._id.toString());
+
+  assert.strictEqual(updatedBlogInDb.title, updatedBlog.title);
+  assert.strictEqual(updatedBlogInDb.author, updatedBlog.author);
+  assert.strictEqual(updatedBlogInDb.url, updatedBlog.url);
+  assert.strictEqual(updatedBlogInDb.likes, updatedBlog.likes);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
