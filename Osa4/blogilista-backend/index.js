@@ -3,11 +3,8 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config()
-
-const password = process.env.PASSWORD
-const dbName = process.env.DB_NAME
-
-const url = `mongodb+srv://juhokan:${password}@puhelinluettelo-db.mutnh94.mongodb.net/${dbName}?retryWrites=true&w=majority&appName=puhelinluettelo-db`;
+const config = require('./utils/config')
+const logger = require('./utils/logger')
 
 const blogSchema = mongoose.Schema({
   title: String,
@@ -16,25 +13,17 @@ const blogSchema = mongoose.Schema({
   likes: Number
 });
 
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method);
-  console.log('Path:  ', request.path);
-  console.log('Body:  ', request.body);
-  console.log('---');
-  next();
-};
 
 const Blog = mongoose.model('Blog', blogSchema);
 
 app.use(express.static('dist'));
 app.use(express.json());
-app.use(requestLogger);
 app.use(cors());
 
 mongoose.set('strictQuery', false);
 
 
-mongoose.connect(url)
+mongoose.connect(config.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -60,7 +49,6 @@ app.post('/api/blogs', (request, response) => {
     });
 });
 
-const PORT = 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
+})
