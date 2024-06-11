@@ -66,6 +66,82 @@ test('identifying field is id', async () => {
   });
 });
 
-after(async () => {
-  await mongoose.connection.close()
+test('POST /api/blogs works', async () => {
+  const before = await Blog.find({});
+
+  const newBlog = {
+    _id: "5a422b891b54a676234d17fa",
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+    likes: 10,
+    __v: 0
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const after = await Blog.find({});
+  assert.strictEqual(before.length + 1, after.length);
+
+  const titles = after.map(blog => blog.title);
+  assert(titles.includes('First class tests'));
+});
+
+test('POST /api/blogs no value for likes sets 0', async () => {
+
+  const newBlog = {
+    _id: "5a422b891b54a676234d17fa",
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+    __v: 0
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogs = await Blog.find({});
+  const addedBlog = blogs.find(blog => blog.title.includes('First class tests'));
+  assert.strictEqual(addedBlog.likes, 0);
+
+});
+
+
+test('POST /api/blogs check empty title returns 400 Bad request', async () => {
+  const newBlog = {
+    _id: "5a422b891b54a676234d17fa",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
+    __v: 0
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
+
+test('POST /api/blogs check empty url returns 400 Bad request', async () => {
+  const newBlog = {
+    _id: "5a422b891b54a676234d17fa",
+    title: "First class tests",
+    author: "Robert C. Martin",
+    __v: 0
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+after(async () => {
+  await mongoose.connection.close();
+});
