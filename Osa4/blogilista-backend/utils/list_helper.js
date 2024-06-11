@@ -26,9 +26,27 @@ const mostBlogs = (blogs) => {
   return result.reduce((blogA, blogB) => (blogA.blogs > blogB.blogs ? blogA : blogB))
 }
 
+const mostLikes = blogs => {
+  const result = blogs.reduce((blogA, blogB) => {
+    let knownAuhtor = blogA.find(f => {
+      return f.author === blogB.author
+    })
+
+    if (!knownAuhtor) {
+      return blogA.concat({ author: blogB.author, likes: blogB.likes })
+    }
+
+    knownAuhtor.likes += blogB.likes
+    return blogA
+  }, [])
+
+  return favoriteBlog(result)
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
