@@ -62,6 +62,46 @@ describe('when there is initially one user at db', () => {
   })
 })
 
+test('creation fails with proper statuscode and message if username is less than 3 characters', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'ro',
+    name: 'Test User',
+    password: 'validpassword',
+  };
+
+  const result = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  const usersAtEnd = await helper.usersInDb();
+  assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+  assert(result.body.error.includes('username must be at least 3 characters long'));
+});
+
+test('creation fails with proper statuscode and message if password is less than 3 characters', async () => {
+  const usersAtStart = await helper.usersInDb();
+
+  const newUser = {
+    username: 'validusername',
+    name: 'Test User',
+    password: 'pw',
+  };
+
+  const result = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  const usersAtEnd = await helper.usersInDb();
+  assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+  assert(result.body.error.includes('password must be at least 3 characters long'));
+});
+
 after(async () => {
   await User.deleteMany({})
   await mongoose.connection.close();
