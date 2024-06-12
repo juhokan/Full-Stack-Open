@@ -5,20 +5,19 @@ import { UserContext } from '../context';
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { token, setToken } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({
+      const newUser = await loginService.login({
         username,
         password,
       });
-      console.log(user);
       setUsername('');
       setPassword('');
-      setToken(user.token);
+      setUser(newUser);
     } catch (err) {
       console.error(err);
     }

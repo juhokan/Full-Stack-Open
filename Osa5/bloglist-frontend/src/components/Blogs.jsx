@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import blogService from '../services/blogs';
 import Blog from './Blog';
+import { UserContext } from '../context';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
+  const { user, setUser } = useContext(UserContext);
+  const [username, setUsername] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,13 +18,27 @@ const Blogs = () => {
       }
     };
 
+    try {
+      setUsername(user.name)
+    } catch (error) {
+      console.error('not valid JSON')
+    }
+
     fetchData();
-  }, []);
+  }, [user]);
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    setUser()
+  }
 
 
   return (
     <>
       <h2>blogs</h2>
+      <p>{username} logged in
+        <button onClick={handleLogout}>log out</button>
+      </p>
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
       ))}

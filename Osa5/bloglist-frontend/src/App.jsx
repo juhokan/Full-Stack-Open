@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from 'react';
-
-import blogService from './services/blogs';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
 import { UserContext } from './context';
 
-const TOKEN_KEY = 'token';
+const USER_JSON = 'user_json';
 
 const App = () => {
-  const [token, setToken] = useState('');
+  const [user, setUser] = useState('');
 
   useEffect(() => {
-    initToken();
+    initUser();
   }, []);
 
-  const setAndSaveToken = (newToken) => {
-    if (newToken) {
-      window.localStorage.setItem(TOKEN_KEY, newToken);
-      setToken(newToken);
+  const setAndSaveUser = (newJSON) => {
+    setUser(newJSON)
+    if (newJSON !== null) {
+      window.localStorage.setItem(USER_JSON, JSON.stringify(newJSON));
     } else {
-      window.localStorage.removeItem(TOKEN_KEY);
+      window.localStorage.removeItem(USER_JSON);
     }
   };
 
-  const initToken = () => {
-    const t = window.localStorage.getItem(TOKEN_KEY);
-    if (t) {
-      setToken(t);
+  const initUser = () => {
+    const userJSON = window.localStorage.getItem(USER_JSON);
+    if (userJSON !== undefined) {
+      setUser(JSON.parse(userJSON));
     }
   };
 
   return (
-    <UserContext.Provider value={{ token, setToken: setAndSaveToken }}>
+    <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
       <main>
-        {token ? <Blogs /> : <LoginForm />}
+        {user ? <Blogs /> : <LoginForm />}
       </main>
     </UserContext.Provider>
   );
