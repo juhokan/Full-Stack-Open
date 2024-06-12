@@ -11,16 +11,12 @@ const CreateBlog = ({ setBlogs }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      await blogService.postNewBlog(title, author, url, user.token);
-      const updatedBlogs = await blogService.getAll();
-      setBlogs(updatedBlogs);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-    } catch (error) {
-      console.error(error);
-    }
+    await blogService.postNewBlog(title, author, url, user.token);
+    const updatedBlogs = await blogService.getAll();
+    setBlogs(updatedBlogs);
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (

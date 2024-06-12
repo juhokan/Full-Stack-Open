@@ -5,7 +5,7 @@ import { UserContext } from '../context';
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
