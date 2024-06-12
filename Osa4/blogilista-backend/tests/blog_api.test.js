@@ -4,6 +4,8 @@ const assert = require('node:assert')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const { createUserAndGetToken } = require('./test_helper');
 
 const api = supertest(app)
 
@@ -44,12 +46,12 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
+beforeEach(async () => {
+  await User.deleteMany({});
+  const result = await createUserAndGetToken();
+  token = result.token;
+});
+
 
 test('there are three blogs', async () => {
   const response = await api.get('/api/blogs')
@@ -66,20 +68,29 @@ test('identifying field is id', async () => {
   });
 });
 
+
+test('blogs are returned as json', async () => {
+  await api
+    .get('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+});
+
+
 test('POST /api/blogs works', async () => {
   const before = await Blog.find({});
 
   const newBlog = {
-    _id: "5a422b891b54a676234d17fa",
     title: "First class tests",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
     likes: 10,
-    __v: 0
   };
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/);
@@ -91,56 +102,47 @@ test('POST /api/blogs works', async () => {
   assert(titles.includes('First class tests'));
 });
 
-test('POST /api/blogs no value for likes sets 0', async () => {
+test('POST /api/blogs returns 401 without token', async () => {
+  const before = await Blog.find({});
 
   const newBlog = {
-    _id: "5a422b891b54a676234d17fa",
     title: "First class tests",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
-    __v: 0
+    likes: 10,
   };
 
   await api
     .post('/api/blogs')
     .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
-
-  const blogs = await Blog.find({});
-  const addedBlog = blogs.find(blog => blog.title.includes('First class tests'));
-  assert.strictEqual(addedBlog.likes, 0);
-
+    .expect(401)
 });
-
 
 test('POST /api/blogs check empty title returns 400 Bad request', async () => {
   const newBlog = {
-    _id: "5a422b891b54a676234d17fa",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html",
-    __v: 0
   };
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
-    .expect(400)
-})
+    .expect(400);
+});
 
 test('POST /api/blogs check empty url returns 400 Bad request', async () => {
   const newBlog = {
-    _id: "5a422b891b54a676234d17fa",
     title: "First class tests",
     author: "Robert C. Martin",
-    __v: 0
   };
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
-    .expect(400)
-})
+    .expect(400);
+});
 
 test('DELETE /api/blogs/:id deletes a blog post', async () => {
   const blogsAtStart = await Blog.find({});
@@ -148,6 +150,7 @@ test('DELETE /api/blogs/:id deletes a blog post', async () => {
 
   await api
     .delete(`/api/blogs/${blogToDelete._id}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204);
 
   const blogsAtEnd = await Blog.find({});

@@ -15,8 +15,15 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response, next) => {
   try {
     const body = request.body;
+    let token
 
-    const token = request.token;
+    if (request.token) {
+      token = request.token;
+    }
+    else {
+      return response.status(401).json({ error: 'token invalid' });
+    }
+
     const decodedToken = jwt.verify(token, process.env.SECRET);
 
     if (!decodedToken.id) {
