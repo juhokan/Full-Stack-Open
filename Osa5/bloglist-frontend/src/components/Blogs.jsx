@@ -11,6 +11,7 @@ const Blogs = () => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState(null);
   const [type, setType] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -35,6 +36,10 @@ const Blogs = () => {
     setUser(null);
   };
 
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible)
+  }
+
   return (
     <>
       <h2>Blogs</h2>
@@ -43,7 +48,10 @@ const Blogs = () => {
         {username} logged in
         <button onClick={handleLogout}>Log Out</button>
       </p>
-      <CreateBlog setBlogs={setBlogs} setMessage={setMessage} setType={setType}/>
+      {isVisible && <CreateBlog setBlogs={setBlogs} setMessage={setMessage} setType={setType}/>}
+      
+      {isVisible ? <button onClick={toggleVisibility}>Cancel</button> : <button onClick={toggleVisibility}>New blog</button>}
+      
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
