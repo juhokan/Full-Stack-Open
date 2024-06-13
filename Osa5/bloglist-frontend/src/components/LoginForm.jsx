@@ -7,7 +7,7 @@ const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { setUser } = useContext(UserContext)
-  const { message, setMessage, type, setType } = useContext(NotificationContext)
+  const { setMessage, setType } = useContext(NotificationContext)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -40,7 +40,7 @@ const LoginForm = () => {
   return (
     <>
       <h2>Login</h2>
-      <Notification message={message} type={type} />
+      <Notification />
       <form onSubmit={handleLogin}>
         <div>
           username

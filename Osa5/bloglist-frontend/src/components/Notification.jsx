@@ -1,7 +1,10 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useContext } from 'react'
+import { NotificationContext } from '../context'
 
-const Notification = ({ message, type }) => {
+const Notification = () => {
+  const { message, type } = useContext(NotificationContext)
+
   if (message === null) {
     return null
   }
@@ -11,11 +14,6 @@ const Notification = ({ message, type }) => {
       {message}
     </div>
   )
-}
-
-Notification.propTypes = {
-  message: PropTypes.string,
-  type: PropTypes.string
 }
 
 export default Notification
