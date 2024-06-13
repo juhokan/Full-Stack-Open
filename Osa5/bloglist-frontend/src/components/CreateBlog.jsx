@@ -13,7 +13,8 @@ const CreateBlog = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     const response = await blogService.postNewBlog(title, author, url, user.token)
-    if (response.status !== 400) {
+    console.log(response)
+    if (response.status !== 400 && response.status !== 401) {
       const updatedBlogs = await blogService.getAll()
       setBlogs(updatedBlogs)
       displayMessage(`A new blog ${response.data.title} by ${response.data.author} created!`, 'success')
