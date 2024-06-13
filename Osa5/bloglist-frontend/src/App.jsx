@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
-import { UserContext } from './context';
+import { UserContext, BlogContext } from './context';
+import blogService from './services/blogs'
 import '/./index.css'
 
 const USER_JSON = 'user_json';
 
 const App = () => {
   const [user, setUser] = useState('');
+  const [blogs, setBlogs] = useState('');
 
   useEffect(() => {
     initUser();
@@ -31,9 +33,11 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
-      <main>
-        {user ? <Blogs /> : <LoginForm />}
-      </main>
+      <BlogContext.Provider value={{ blogs, setBlogs }}>
+        <main>
+          {user ? <Blogs /> : <LoginForm />}
+        </main>
+      </BlogContext.Provider>
     </UserContext.Provider>
   );
 };

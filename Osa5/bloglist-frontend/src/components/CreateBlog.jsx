@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import blogService from '../services/blogs';
-import { UserContext } from '../context';
+import { BlogContext, UserContext } from '../context';
 
-const CreateBlog = ({ setBlogs, setMessage, setType }) => {
+const CreateBlog = ({ setMessage, setType }) => {
+  const { setBlogs } = useContext(BlogContext)
   const { user } = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
