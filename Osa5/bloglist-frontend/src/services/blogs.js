@@ -58,5 +58,23 @@ const putBlog = async (id, user, likes, title, author, url, token) => {
   }
 }
 
+const deleteBlog = async (id, token) => {
+  const url = `${baseUrl}/${id}`
 
-export default { getAll, postNewBlog, putBlog }
+  try {
+    const response = await axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    console.log(JSON.stringify(response.data));
+    return response;
+  } catch (error) {
+    return error.response
+  }
+}
+
+
+export default { getAll, postNewBlog, putBlog, deleteBlog }

@@ -11,6 +11,13 @@ const Blog = ({ blog }) => {
     setIsVisible(!isVisible);
   };
 
+  const handleDelete = async () => {
+    if (window.confirm(`Remove blog ${blog.name}?`)) {
+      const response = await blogService.deleteBlog(blog.id, user.token)
+      console.log(response)
+    }
+  }
+
   const handleLike = async () => {
     const response = await blogService.putBlog(
       blog.id, 
@@ -36,14 +43,14 @@ const Blog = ({ blog }) => {
   const VisibleBlog = () => {
     return (
       <div>
-        <div>{blog.title} {blog.author}</div>
+        <div>{blog.title} {blog.author} <button onClick={toggleVisibility}>hide</button></div>
         <div>{blog.url}</div>
         <div>
           Likes: {blog.likes}
           <button onClick={handleLike} >Like</button>
         </div>
         <div>{blog.user.name}</div>
-        <button onClick={toggleVisibility}>hide</button>
+        <button onClick={handleDelete}>remove</button>
       </div>
     );
   };
