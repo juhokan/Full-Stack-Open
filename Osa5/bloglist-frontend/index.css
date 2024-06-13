@@ -1,5 +1,4 @@
-.error, .success {
-    background: lightgrey;
+.error, .success, .blog{
     font-size: 20px;
     border-style: solid;
     border-radius: 5px;
@@ -9,8 +8,14 @@
 
 .success {
     color: green;
+    background: lightgrey;
 }
 
 .error {
     color: red;
+    background: lightgrey;
+}
+
+.blog {
+    color: black;
 }
