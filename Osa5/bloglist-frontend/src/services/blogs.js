@@ -32,5 +32,31 @@ const postNewBlog = async (title, author, url, token) => {
   }
 };
 
+const putBlog = async (id, user, likes, title, author, url, token) => {
+  const putUrl = `${baseUrl}/${id}`
 
-export default { getAll, postNewBlog }
+  try {
+    const data = {
+      user: user,
+      likes: likes,
+      title: title,
+      author: author,
+      url: url
+    };
+
+    const response = await axios.put(putUrl, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    console.log(JSON.stringify(response.data));
+    return response;
+  } catch (error) {
+    return error.response
+  }
+}
+
+
+export default { getAll, postNewBlog, putBlog }
