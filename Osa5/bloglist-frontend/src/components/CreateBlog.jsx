@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
 import blogService from '../services/blogs';
-import { BlogContext, UserContext } from '../context';
+import { BlogContext, UserContext, NotificationContext } from '../context';
 
-const CreateBlog = ({ setMessage, setType }) => {
+const CreateBlog = () => {
   const { setBlogs } = useContext(BlogContext)
   const { user } = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const { setMessage, setType } = useContext(NotificationContext)
 
   const handleSubmit = async (event) => {
     event.preventDefault();

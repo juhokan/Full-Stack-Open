@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
-import { UserContext, BlogContext } from './context';
-import blogService from './services/blogs'
+import { UserContext, BlogContext, NotificationContext } from './context';
 import '/./index.css'
 
 const USER_JSON = 'user_json';
 
 const App = () => {
-  const [user, setUser] = useState('');
-  const [blogs, setBlogs] = useState('');
+  const [user, setUser] = useState(null);
+  const [blogs, setBlogs] = useState(null)
+  const [message, setMessage] = useState(null);
+  const [type, setType] = useState(null);
 
   useEffect(() => {
     initUser();
@@ -34,9 +35,11 @@ const App = () => {
   return (
     <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
       <BlogContext.Provider value={{ blogs, setBlogs }}>
-        <main>
-          {user ? <Blogs /> : <LoginForm />}
-        </main>
+        <NotificationContext.Provider value={{ message, setMessage, type, setType }}>
+          <main>
+            {user ? <Blogs /> : <LoginForm />}
+          </main>
+        </NotificationContext.Provider>
       </BlogContext.Provider>
     </UserContext.Provider>
   );

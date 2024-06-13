@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Blog from './Blog';
 import blogService from '../services/blogs'
-import { BlogContext, UserContext } from '../context';
+import { BlogContext, UserContext, NotificationContext } from '../context';
 import CreateBlog from './CreateBlog';
 import Notification from './Notification';
 
@@ -9,9 +9,8 @@ const Blogs = () => {
   const { blogs, setBlogs } = useContext(BlogContext) 
   const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
-  const [message, setMessage] = useState(null);
-  const [type, setType] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const { message, type } = useContext(NotificationContext)
 
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const Blogs = () => {
         {username} logged in
         <button onClick={handleLogout}>Log Out</button>
       </p>
-      {isVisible && <CreateBlog setMessage={setMessage} setType={setType}/>}
+      {isVisible && <CreateBlog />}
       
       {isVisible ? <button onClick={toggleVisibility}>Cancel</button> : <button onClick={toggleVisibility}>New blog</button>}
       

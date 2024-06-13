@@ -1,14 +1,13 @@
 import React, { useState, useContext } from 'react';
 import loginService from '../services/login';
 import Notification from './Notification';
-import { UserContext } from '../context';
+import { NotificationContext, UserContext } from '../context';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
-  const [type, setType] = useState(null);
   const { setUser } = useContext(UserContext);
+  const { message, setMessage, type, setType } = useContext(NotificationContext)
 
   const handleLogin = async (event) => {
     event.preventDefault();
