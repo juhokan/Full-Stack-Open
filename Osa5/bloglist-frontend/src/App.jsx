@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
 import { UserContext } from './context';
+import '/./index.css'
 
 const USER_JSON = 'user_json';
 

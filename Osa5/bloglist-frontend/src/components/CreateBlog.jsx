@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import blogService from '../services/blogs';
-import { useContext } from 'react';
 import { UserContext } from '../context';
 
-const CreateBlog = ({ setBlogs }) => {
+const CreateBlog = ({ setBlogs, setMessage, setType }) => {
   const { user } = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -11,12 +10,35 @@ const CreateBlog = ({ setBlogs }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await blogService.postNewBlog(title, author, url, user.token);
-    const updatedBlogs = await blogService.getAll();
-    setBlogs(updatedBlogs);
+    const response = await blogService.postNewBlog(title, author, url, user.token);
+    if (response.status !== 400) {
+      const updatedBlogs = await blogService.getAll();
+      setBlogs(updatedBlogs);
+      displayMessage(`A new blog ${response.data.title} by ${response.data.author} created!`, 'success');
+    } 
+    else {
+      displayMessage('Error creating blog!', 'error');
+    }
+
+    console.log(response)
+
+    resetForm();
+
+
+  }
+  const resetForm = () => {
     setTitle('');
     setAuthor('');
     setUrl('');
+  };
+
+  const displayMessage = (message, type) => {
+    setMessage(message);
+    setType(type);
+    setTimeout(() => {
+      setMessage(null);
+      setType(null);
+    }, 2000);
   };
 
   return (
