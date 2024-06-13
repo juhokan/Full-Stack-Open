@@ -1,40 +1,40 @@
-import React, { useState, useContext } from 'react';
-import loginService from '../services/login';
-import Notification from './Notification';
-import { NotificationContext, UserContext } from '../context';
+import React, { useState, useContext } from 'react'
+import loginService from '../services/login'
+import Notification from './Notification'
+import { NotificationContext, UserContext } from '../context'
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { setUser } = useContext(UserContext);
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const { setUser } = useContext(UserContext)
   const { message, setMessage, type, setType } = useContext(NotificationContext)
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-      const newUser = await loginService.login({ username, password });
-      setUser(newUser);
-      resetForm();
+      const newUser = await loginService.login({ username, password })
+      setUser(newUser)
+      resetForm()
     } catch (err) {
-      console.error(err);
-      displayMessage('Wrong username or password', 'error');
+      console.error(err)
+      displayMessage('Wrong username or password', 'error')
     }
-  };
+  }
 
   const resetForm = () => {
-    setUsername('');
-    setPassword('');
-  };
+    setUsername('')
+    setPassword('')
+  }
 
   const displayMessage = (message, type) => {
-    setMessage(message);
-    setType(type);
+    setMessage(message)
+    setType(type)
     setTimeout(() => {
-      setMessage(null);
-      setType(null);
-    }, 2000);
-  };
+      setMessage(null)
+      setType(null)
+    }, 2000)
+  }
 
 
   return (
@@ -63,7 +63,7 @@ const LoginForm = () => {
         <button type="submit">login</button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

@@ -1,47 +1,47 @@
-import React, { useState, useContext } from 'react';
-import blogService from '../services/blogs';
-import { BlogContext, UserContext, NotificationContext } from '../context';
+import React, { useState, useContext } from 'react'
+import blogService from '../services/blogs'
+import { BlogContext, UserContext, NotificationContext } from '../context'
 
 const CreateBlog = () => {
   const { setBlogs } = useContext(BlogContext)
-  const { user } = useContext(UserContext);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const { user } = useContext(UserContext)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   const { setMessage, setType } = useContext(NotificationContext)
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    const response = await blogService.postNewBlog(title, author, url, user.token);
+    event.preventDefault()
+    const response = await blogService.postNewBlog(title, author, url, user.token)
     if (response.status !== 400) {
-      const updatedBlogs = await blogService.getAll();
-      setBlogs(updatedBlogs);
-      displayMessage(`A new blog ${response.data.title} by ${response.data.author} created!`, 'success');
-    } 
+      const updatedBlogs = await blogService.getAll()
+      setBlogs(updatedBlogs)
+      displayMessage(`A new blog ${response.data.title} by ${response.data.author} created!`, 'success')
+    }
     else {
-      displayMessage('Error creating blog!', 'error');
+      displayMessage('Error creating blog!', 'error')
     }
 
     console.log(response)
 
-    resetForm();
+    resetForm()
 
 
   }
   const resetForm = () => {
-    setTitle('');
-    setAuthor('');
-    setUrl('');
-  };
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
 
   const displayMessage = (message, type) => {
-    setMessage(message);
-    setType(type);
+    setMessage(message)
+    setType(type)
     setTimeout(() => {
-      setMessage(null);
-      setType(null);
-    }, 2000);
-  };
+      setMessage(null)
+      setType(null)
+    }, 2000)
+  }
 
   return (
     <>
@@ -77,7 +77,7 @@ const CreateBlog = () => {
         <button type="submit">Create</button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default CreateBlog;
+export default CreateBlog

@@ -1,26 +1,26 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
-import { BlogContext, UserContext } from "../context";
-import { useContext } from "react";
+import { BlogContext, UserContext } from '../context'
+import { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
   const { user } = useContext(UserContext)
   const { setBlogs } = useContext(BlogContext)
 
   const fetchBlogs = async () => {
     try {
-      const blogsData = await blogService.getAll();
-      setBlogs(blogsData);
+      const blogsData = await blogService.getAll()
+      setBlogs(blogsData)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const toggleVisibility = () => {
-    setIsVisible(!isVisible);
-  };
+    setIsVisible(!isVisible)
+  }
 
   const handleDelete = async () => {
     if (window.confirm(`Remove blog ${blog.name}?`)) {
@@ -32,12 +32,12 @@ const Blog = ({ blog }) => {
 
   const handleLike = async () => {
     const response = await blogService.putBlog(
-      blog.id, 
-      blog.user, 
-      blog.likes + 1, 
-      blog.title, 
-      blog.author, 
-      blog.url, 
+      blog.id,
+      blog.user,
+      blog.likes + 1,
+      blog.title,
+      blog.author,
+      blog.url,
       user.token
     )
     console.log(response)
@@ -50,8 +50,8 @@ const Blog = ({ blog }) => {
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>show</button>
       </div>
-    );
-  };
+    )
+  }
 
   const VisibleBlog = () => {
     return (
@@ -65,18 +65,18 @@ const Blog = ({ blog }) => {
         <div>{blog.user.name}</div>
         <button onClick={handleDelete}>remove</button>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div className="blog">
       {isVisible ? <VisibleBlog /> : <HiddenBlog />}
     </div>
-  );
-};
+  )
+}
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired
 }
 
-export default Blog;
+export default Blog

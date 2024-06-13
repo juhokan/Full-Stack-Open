@@ -3,12 +3,12 @@ const baseUrl = '/api/blogs'
 
 const getAll = async () => {
   try {
-    const response = await axios.get(baseUrl);
-    return response.data;
+    const response = await axios.get(baseUrl)
+    return response.data
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-};
+}
 
 const postNewBlog = async (title, author, url, token) => {
   try {
@@ -16,21 +16,21 @@ const postNewBlog = async (title, author, url, token) => {
       title: title,
       author: author,
       url: url
-    };
+    }
 
     const response = await axios.post(baseUrl, data, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
-    });
+    })
 
-    console.log(JSON.stringify(response.data));
-    return response;
+    console.log(JSON.stringify(response.data))
+    return response
   } catch (error) {
     return error.response
   }
-};
+}
 
 const putBlog = async (id, user, likes, title, author, url, token) => {
   const putUrl = `${baseUrl}/${id}`
@@ -42,17 +42,17 @@ const putBlog = async (id, user, likes, title, author, url, token) => {
       title: title,
       author: author,
       url: url
-    };
+    }
 
     const response = await axios.put(putUrl, data, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
-    });
+    })
 
-    console.log(JSON.stringify(response.data));
-    return response;
+    console.log(JSON.stringify(response.data))
+    return response
   } catch (error) {
     return error.response
   }
@@ -67,10 +67,10 @@ const deleteBlog = async (id, token) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
-    });
+    })
 
-    console.log(JSON.stringify(response.data));
-    return response;
+    console.log(JSON.stringify(response.data))
+    return response
   } catch (error) {
     return error.response
   }
