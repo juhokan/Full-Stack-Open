@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import blogService from '../services/blogs'
 import { BlogContext, UserContext } from "../context";
 import { useContext } from "react";
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -73,5 +74,9 @@ const Blog = ({ blog }) => {
     </div>
   );
 };
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired
+}
 
 export default Blog;
