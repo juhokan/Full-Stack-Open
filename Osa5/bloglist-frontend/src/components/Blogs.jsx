@@ -17,6 +17,7 @@ const Blogs = () => {
     try {
       const blogsData = await blogService.getAll();
       setBlogs(blogsData);
+      console.log(blogsData)
     } catch (error) {
       console.error(error);
     }
@@ -52,7 +53,7 @@ const Blogs = () => {
       
       {isVisible ? <button onClick={toggleVisibility}>Cancel</button> : <button onClick={toggleVisibility}>New blog</button>}
       
-      {blogs.map((blog) => (
+      {blogs.sort((a, b) => b.likes - a.likes).map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
     </>
