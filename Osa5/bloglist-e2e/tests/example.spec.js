@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'salasana'
       }
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Testi Käyttäjä 2',
+        username: 'testi2',
+        password: 'salasana'
+      }
+    });
 
     await page.goto('http://localhost:5173')
   })
@@ -123,6 +130,38 @@ describe('Blog app', () => {
       await removeButton.click();
   
       await expect(page.getByText('Test Title Test Author')).not.toBeVisible();
+    });
+
+    test('only the user who created the blog can see the remove button', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog' }).click();
+  
+      const titleInput = page.locator('input[name="title"]');
+      const authorInput = page.locator('input[name="author"]');
+      const urlInput = page.locator('input[name="url"]');
+
+      await titleInput.fill('Test Title');
+      await authorInput.fill('Test Author');
+      await urlInput.fill('www.test.com');
+  
+      const submitButton = page.locator('button[type="submit"]');
+      await submitButton.click();
+  
+      await expect(page.getByText('A new blog Test Title by Test Author created!')).toBeVisible();
+  
+      const showButton = page.locator('button', { hasText: 'show' });
+      await showButton.click();
+  
+      const removeButton = page.locator('button', { hasText: 'remove' });
+      await expect(removeButton).toBeVisible();
+  
+      await page.getByRole('button', { name: 'Log Out' }).click();
+  
+      await page.getByRole('textbox').first().fill('testi2');
+      await page.getByRole('textbox').last().fill('salasana');
+      await page.getByRole('button', { name: 'login' }).click();
+  
+      await page.getByRole('button', { hasText: 'show' }).click();
+      await expect(removeButton).not.toBeVisible();
     });
   })
 })
