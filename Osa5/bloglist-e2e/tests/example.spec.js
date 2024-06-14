@@ -26,7 +26,6 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByRole('button', { name: 'login' }).click()
       await page.getByRole('textbox').first().fill('testi')
       await page.getByRole('textbox').last().fill('salasana')
       await page.getByRole('button', { name: 'login' }).click()
@@ -35,12 +34,36 @@ describe('Blog app', () => {
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByRole('button', { name: 'login' }).click()
       await page.getByRole('textbox').first().fill('testi')
       await page.getByRole('textbox').last().fill('vääräsalasana')
       await page.getByRole('button', { name: 'login' }).click()
 
       await expect(page.getByText('Wrong username or password')).toBeVisible()
+    })
+  })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('textbox').first().fill('testi')
+      await page.getByRole('textbox').last().fill('salasana')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog' }).click()
+
+      const titleInput = page.locator('input[name="title"]');
+      const authorInput = page.locator('input[name="author"]');
+      const urlInput = page.locator('input[name="url"]');
+
+      await titleInput.fill('Test Title');
+      await authorInput.fill('Test Author');
+      await urlInput.fill('www.test.com');
+
+      const createButton = page.locator('button[type="submit"]');
+      await createButton.click();
+
+      await expect(page.getByText('A new blog Test Title by Test Author created!')).toBeVisible()
     })
   })
 })
