@@ -65,5 +65,31 @@ describe('Blog app', () => {
 
       await expect(page.getByText('A new blog Test Title by Test Author created!')).toBeVisible()
     })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog' }).click();
+  
+      const titleInput = page.locator('input[name="title"]');
+      const authorInput = page.locator('input[name="author"]');
+      const urlInput = page.locator('input[name="url"]');
+  
+      await titleInput.fill('Test Title');
+      await authorInput.fill('Test Author');
+      await urlInput.fill('www.test.com');
+  
+      const submitButton = page.locator('button[type="submit"]');
+      await submitButton.click();
+  
+      await expect(page.getByText('A new blog Test Title by Test Author created!')).toBeVisible();
+  
+      const showButton = page.locator('button', { hasText: 'show' });
+      await showButton.click();
+  
+      const likeButton = page.locator('button', { hasText: 'Like' });
+      await expect(likeButton).toBeVisible();
+      await likeButton.click();
+  
+      await expect(page.getByText('Likes: 1')).toBeVisible();
+    });
   })
 })
