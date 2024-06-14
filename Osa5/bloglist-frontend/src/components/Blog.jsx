@@ -23,7 +23,7 @@ const Blog = ({ blog }) => {
   }
 
   const handleDelete = async () => {
-    if (window.confirm(`Remove blog ${blog.name}?`)) {
+    if (window.confirm(`Remove blog ${blog.title}?`)) {
       const response = await blogService.deleteBlog(blog.id, user.token)
       console.log(response)
       fetchBlogs()
@@ -63,7 +63,7 @@ const Blog = ({ blog }) => {
           <button onClick={handleLike} >Like</button>
         </div>
         <div>{blog.user.name}</div>
-        <button onClick={handleDelete}>remove</button>
+        {blog.user.username === user.username && <button onClick={handleDelete}>remove</button>}
       </div>
     )
   }
