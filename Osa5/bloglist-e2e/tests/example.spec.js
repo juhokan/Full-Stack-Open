@@ -156,12 +156,60 @@ describe('Blog app', () => {
   
       await page.getByRole('button', { name: 'Log Out' }).click();
   
-      await page.getByRole('textbox').first().fill('testi2');
-      await page.getByRole('textbox').last().fill('salasana');
-      await page.getByRole('button', { name: 'login' }).click();
-  
-      await page.getByRole('button', { hasText: 'show' }).click();
+      await page.getByRole('textbox').first().fill('testi2')
+      await page.getByRole('textbox').last().fill('salasana')
+      const login = page.locator('button[type="submit"]');
+      await login.click()
+
+      await expect(page.getByText('Testi Käyttäjä 2 logged in')).toBeVisible()
+
+      await showButton.click();
+      
       await expect(removeButton).not.toBeVisible();
+    });
+
+    test('blogs are sorted based on the number of likes', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog' }).click();
+
+      const createBlog = async (title, author, url, likes) => {
+        const titleInput = page.locator('input[name="title"]');
+        const authorInput = page.locator('input[name="author"]');
+        const urlInput = page.locator('input[name="url"]');
+
+        await titleInput.fill(title);
+        await authorInput.fill(author);
+        await urlInput.fill(url);
+
+        const submitButton = page.locator('button[type="submit"]');
+        await submitButton.click();
+
+        await expect(page.getByText(`${title} ${author}`)).toBeVisible()
+
+        const showButton = page.locator('.blog').filter({has: page.getByText(`${title} ${author}`)}).getByRole('button', { name: 'show' })
+        await showButton.click()
+
+        for (let i = 0; i < likes; i++) {
+          const likeButton = page.locator('button', { hasText: 'Like' });
+          await expect(likeButton).toBeVisible();
+          await likeButton.click({setTimeout:1000});
+          await expect(page.getByText(`Likes: ${i+1}`)).toBeVisible();
+        }
+
+        const hideButton = page.locator('button', { hasText: 'hide' });
+        await hideButton.click();
+
+      };
+  
+      await createBlog('Blog 1', 'Author 1', 'www.blog1.com', 3);
+      await createBlog('Blog 2', 'Author 2', 'www.blog2.com', 5);
+      await createBlog('Blog 3', 'Author 3', 'www.blog3.com', 1);
+  
+      const blogTitles = await page.locator('.blog').allTextContents();
+      expect(blogTitles).toEqual([
+        'Blog 2 Author 2show',
+        'Blog 1 Author 1show',
+        'Blog 3 Author 3show',
+      ]);
     });
   })
 })
