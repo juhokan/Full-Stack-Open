@@ -1,26 +1,48 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createAnecdote } from '../requests'
+import { useContext } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createAnecdote } from '../requests';
+import MessageContext from '../context';
 
 const AnecdoteForm = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const [message, messageDispatch] = useContext(MessageContext);
 
   const { mutate } = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: (newAnecdote) => {
-      const anecdotes = queryClient.getQueryData('anecdotes')
-      queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote))
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] });
+      messageDispatch({
+        type: "MESSAGE",
+        payload: 'new anecdote added',
+      });
+      setTimeout(() => {
+        messageDispatch({
+          type: "RESET",
+        });
+      }, 3000);
     },
-  })
+    onError: () => {
+      messageDispatch({
+        type: "MESSAGE",
+        payload: 'error adding anecdote',
+      });
+      setTimeout(() => {
+        messageDispatch({
+          type: "RESET",
+        });
+      }, 3000);
+    },
+  });
 
   const onCreate = (event) => {
-    event.preventDefault()
-    const content = event.target.anecdote.value.trim()
+    event.preventDefault();
+    const content = event.target.anecdote.value.trim();
     if (content) {
-      const newAnecdote = { content, votes: 0 }
-      event.target.anecdote.value = ''
-      mutate(newAnecdote)
+      const newAnecdote = { content, votes: 0 };
+      event.target.anecdote.value = '';
+      mutate(newAnecdote);
     }
-  }
+  };
 
   return (
     <div>
@@ -30,7 +52,7 @@ const AnecdoteForm = () => {
         <button type="submit">create</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AnecdoteForm
+export default AnecdoteForm;
