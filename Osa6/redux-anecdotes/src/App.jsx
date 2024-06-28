@@ -4,6 +4,8 @@ const App = () => {
   const anecdotes = useSelector(state => state)
   const dispatch = useDispatch()
 
+  const generateId = () => (100000 * Math.random()).toFixed(0)
+
   const vote = (anecdote) => {
     const votes = anecdote.votes + 1
     dispatch({
@@ -14,6 +16,24 @@ const App = () => {
         id: anecdote.id,
       }
     })
+  }
+
+  const addAnecdote = (event) => {
+    event.preventDefault()
+    const content = event.target.anecdote.value
+    event.target.anecdote.value = ''
+    dispatch(createAnecdote(content))
+  }
+
+  const createAnecdote = (content) => {
+    return {
+      type: 'CREATE',
+      payload: {
+        content,
+        votes: 0,
+        id: generateId()
+      }
+    }
   }
 
   return (
@@ -31,9 +51,9 @@ const App = () => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
-        <button>create</button>
+      <form onSubmit={addAnecdote}>
+        <input name="anecdote" /> 
+        <button type="submit">create</button>
       </form>
     </div>
   )
