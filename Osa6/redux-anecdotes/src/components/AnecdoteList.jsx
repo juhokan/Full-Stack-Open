@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 const AnecdoteList = () => {
   const anecdotes = useSelector(({ anecdotes, filter }) => {
-    if (filter === 'ALL') {
+    if (filter === '') {
       return anecdotes;
     }
     return anecdotes.filter(anecdote =>
