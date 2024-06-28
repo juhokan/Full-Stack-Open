@@ -1,12 +1,18 @@
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux";
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(state => state)
-  const dispatch = useDispatch()
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    if (filter === 'ALL') {
+      return anecdotes;
+    }
+    return anecdotes.filter(anecdote =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    );
+  });
+  const dispatch = useDispatch();
 
   const vote = (anecdote) => {
-
-    const votes = anecdote.votes + 1
+    const votes = anecdote.votes + 1;
     dispatch({
       type: 'VOTE',
       payload: {
@@ -14,10 +20,10 @@ const AnecdoteList = () => {
         votes: votes,
         id: anecdote.id,
       }
-    })
-  }
+    });
+  };
 
-  const sortedAnecdotes = anecdotes.slice().sort((a, b) => b.votes - a.votes)
+  const sortedAnecdotes = anecdotes.slice().sort((a, b) => b.votes - a.votes);
 
   return (
     <>
@@ -33,7 +39,7 @@ const AnecdoteList = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default AnecdoteList
+export default AnecdoteList;
