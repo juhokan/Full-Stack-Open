@@ -28,9 +28,6 @@ const anecdoteSlice = createSlice({
         ...anecdoteToVote,
         votes: anecdoteToVote.votes + 1
       }
-
-      console.log(JSON.parse(JSON.stringify(state)))
-
       return state.map(anecdote => 
         anecdote.id !== id ? anecdote : changed
       )
@@ -43,7 +40,7 @@ const anecdoteSlice = createSlice({
       }
       state.push(newAnecdote);
     }
-  }
+  },
 });
 
 export const { vote, create } = anecdoteSlice.actions;
