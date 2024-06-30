@@ -7,10 +7,18 @@ const ANECDOTE_KEY = 'anecdotes'
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([])
+  const [notification, setNotification] = useState('')
 
   useEffect(() => {
     initAnecdotes()
   }, [])
+
+  const handleSetNotification = (content) => {
+    setNotification(`a new anecdote ${content} created!`);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  }
 
   const base = [
     {
@@ -35,16 +43,17 @@ const App = () => {
       setAnecdotes(JSON.parse(a))
     } 
     else {
-      base.forEach(anecdote => setAndSaveAnecdote(anecdote))
+      setAnecdotes(base)
+      window.localStorage.setItem(ANECDOTE_KEY, JSON.stringify(base))
     }
   }
 
   const setAndSaveAnecdote = (anecdote) => {
-    console.log('created: ', anecdote);
-    setAnecdotes(prevAnecdotes => {
-      const newAnecdotes = prevAnecdotes.concat(anecdote)
+    setAnecdotes(prev => {
+      const newAnecdotes = prev.concat(anecdote)
       localStorage.setItem(ANECDOTE_KEY, JSON.stringify(newAnecdotes))
       setAnecdotes(newAnecdotes)
+      handleSetNotification(anecdote.content)
       return newAnecdotes
     })
   }
@@ -52,6 +61,7 @@ const App = () => {
   return (
     <AnecdoteContext.Provider value={{ anecdotes, setAnecdotes: setAndSaveAnecdote }}>
       <h1>Software anecdotes</h1>
+      {notification && <div>{notification}</div>}
       <AppContainer />
       <Footer />
     </AnecdoteContext.Provider>

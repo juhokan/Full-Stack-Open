@@ -1,8 +1,11 @@
 import React from 'react'
 import { AnecdoteContext } from '../context'
+import { useNavigate } from 'react-router-dom'
 
 const CreateNew = () => {
   const { setAnecdotes } = React.useContext(AnecdoteContext)
+
+  const navigate = useNavigate()
 
   const [content, setContent] = React.useState('')
   const [author, setAuthor] = React.useState('')
@@ -11,6 +14,7 @@ const CreateNew = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdote)
+    navigate('/')
   }
  
   
