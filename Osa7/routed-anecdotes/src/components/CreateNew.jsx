@@ -7,9 +7,10 @@ const CreateNew = () => {
   const { setAnecdotes } = React.useContext(AnecdoteContext)
   const navigate = useNavigate()
 
-  const content = useField('text')
-  const author = useField('text')
-  const info = useField('text')
+  const { reset: resetContent, ...content } = useField("text");
+  const { reset: resetAuthor, ...author } = useField("text");
+  const { reset: resetInfo, ...info } = useField("text");
+
 
   const addNew = (anecdote) => {
     const id = Math.round(Math.random() * 10000)
@@ -20,7 +21,6 @@ const CreateNew = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(content.value)
     addNew({
       info: info.value,
       content: content.value,
@@ -28,6 +28,13 @@ const CreateNew = () => {
       votes: 0
     })
   }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    resetContent();
+    resetAuthor();
+    resetInfo();
+  };
 
   return (
     <div>
@@ -46,6 +53,7 @@ const CreateNew = () => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
