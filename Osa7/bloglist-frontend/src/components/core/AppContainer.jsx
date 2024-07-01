@@ -6,11 +6,15 @@ import LoginForm from '../login/LoginForm'
 import UsersPage from './UsersPage'
 import UserPage from './UserPage'
 import BlogPage from './BlogPage'
+import MenuBar from './MenuBar'
+import Header from './Header'
 
 const AppContainer = () => {
   const { user } = React.useContext(UserContext)
   return (
     <Router>
+      <MenuBar />
+      <Header />
       <Routes>
         <Route index element={user ? <Blogs /> : <LoginForm />} />
         <Route path='/users' element={<UsersPage />}></Route>

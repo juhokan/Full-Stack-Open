@@ -3,8 +3,6 @@ import { Container } from '@mui/material'
 import { UserContext, BlogContext, NotificationContext } from './context'
 import './App.css'
 import AppContainer from './components/core/AppContainer'
-import MenuBar from './components/core/MenuBar'
-import Header from './components/core/Header'
 
 const USER_JSON = 'user_json'
 
@@ -51,8 +49,6 @@ const App = () => {
       <BlogContext.Provider value={{ blogs, setBlogs }}>
         <NotificationContext.Provider value={{ message, messageDispatch, type, setType }}>
           <Container>
-            <MenuBar />
-            <Header />
             <AppContainer />
           </Container>
         </NotificationContext.Provider>

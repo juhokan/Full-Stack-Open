@@ -4,6 +4,10 @@ import Notification from '../notifications/Notification'
 import { NotificationContext, UserContext } from '../../context'
 import { ERROR, SUCCESS } from '../../model'
 import { login } from '../../requests'
+import {
+  TextField,
+  Button
+} from '@mui/material'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -55,20 +59,20 @@ const LoginForm = () => {
       <Notification/>
       <form onSubmit={handleLogin}>
         <div>
-          username
-          <input
+          <TextField
             type="text"
             value={username}
             name="Username"
+            label="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
-          password
-          <input
+          <TextField
             type="password"
             value={password}
             name="Password"
+            label="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
