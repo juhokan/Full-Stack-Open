@@ -8,17 +8,12 @@ const URL = 'http://localhost:3003/api/users'
 
 const UserPage = () => {
   const id = useParams().id
-  const [user, setUser] = React.useState(null)
 
-  useEffect(() => {
-    const getUser = async () => {
-      const u = await axios.get(`${URL}/${id}`)
-      if (u) {
-        setUser(u.data)
-      }
-    }
-    getUser()
-  }, [])
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn:() => getUser(id),
+    retry: 1
+  })
 
   return (
     <div>
