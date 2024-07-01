@@ -16,9 +16,13 @@ const UserPage = () => {
   })
 
   return (
-    <div>
-      {user && user.name}
-    </div>
+    <>
+      <h2>{user && user.name}</h2>
+      <h3>added blogs</h3>
+      {user && user.blogs && user.blogs.map(b => (
+        <li key={b.id}>{b.title}</li>
+      ))}
+    </>
   )
 }
 
