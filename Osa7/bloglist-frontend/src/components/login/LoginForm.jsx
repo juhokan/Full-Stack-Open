@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import Notification from './Notification'
-import { NotificationContext, UserContext } from '../context'
-import { ERROR, SUCCESS } from '../model'
-import { login } from '../requests'
+import Notification from '../notifications/Notification'
+import { NotificationContext, UserContext } from '../../context'
+import { ERROR, SUCCESS } from '../../model'
+import { login } from '../../requests'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')

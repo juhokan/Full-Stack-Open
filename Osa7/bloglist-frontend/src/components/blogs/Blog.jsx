@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { UserContext, NotificationContext, BlogContext } from '../context'
+import { UserContext, NotificationContext, BlogContext } from '../../context'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import PropTypes from 'prop-types'
-import { deleteBlog, likeBlog } from '../requests'
-import { ERROR, SUCCESS } from '../model'
+import { deleteBlog, likeBlog } from '../../requests'
+import { ERROR, SUCCESS } from '../../model'
 
 const Blog = ({ blog }) => {
   const [isVisible, setIsVisible] = useState(false)

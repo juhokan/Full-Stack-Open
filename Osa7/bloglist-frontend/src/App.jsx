@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import LoginForm from './components/LoginForm'
-import Blogs from './components/Blogs'
 import { UserContext, BlogContext, NotificationContext } from './context'
 import '/./index.css'
+import AppContainer from './components/core/AppContainer'
+import MenuBar from './components/core/MenuBar'
+import Header from './components/core/Header'
 
 const USER_JSON = 'user_json'
 
@@ -48,7 +49,9 @@ const App = () => {
     <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
       <BlogContext.Provider value={{ blogs, setBlogs }}>
         <NotificationContext.Provider value={{ message, messageDispatch, type, setType }}>
-          <main>{user ? <Blogs /> : <LoginForm />}</main>
+          <MenuBar />
+          <Header />
+          <AppContainer />
         </NotificationContext.Provider>
       </BlogContext.Provider>
     </UserContext.Provider>

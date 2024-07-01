@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react'
-import { UserContext, NotificationContext, BlogContext } from '../context'
+import { UserContext, NotificationContext, BlogContext } from '../../context'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ERROR, SUCCESS } from '../model'
-import { createBlog } from '../requests'
+import { ERROR, SUCCESS } from '../../model'
+import { createBlog } from '../../requests'
 
 const CreateBlog = () => {
   const { user } = useContext(UserContext)
