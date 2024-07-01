@@ -1,11 +1,10 @@
 import React, { useState, useContext } from 'react'
-import { BlogContext, UserContext, NotificationContext } from '../context'
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
+import { UserContext, NotificationContext } from '../context'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ERROR, SUCCESS } from '../model'
-import { createBlog, getBlogs } from '../requests'
+import { createBlog } from '../requests'
 
 const CreateBlog = () => {
-  const { setBlogs } = useContext(BlogContext)
   const { user } = useContext(UserContext)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -30,6 +29,7 @@ const CreateBlog = () => {
       }, 3000)
     },
     onError: () => {
+      setType(ERROR)
       messageDispatch({
         type: 'MESSAGE',
         payload: 'error adding anecdote',
@@ -38,6 +38,7 @@ const CreateBlog = () => {
         messageDispatch({
           type: 'RESET',
         })
+        setType('')
       }, 3000)
     },
   })

@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from 'react'
 import Blog from './Blog'
-import blogService from '../services/blogs'
 import { BlogContext, UserContext } from '../context'
 import { useQuery } from '@tanstack/react-query'
 import CreateBlog from './CreateBlog'
