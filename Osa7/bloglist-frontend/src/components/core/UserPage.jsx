@@ -2,6 +2,14 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getUser } from '../../requests'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@mui/material'
 
 const UserPage = () => {
   const id = useParams().id
@@ -14,11 +22,28 @@ const UserPage = () => {
 
   return (
     <>
-      <h2>{user && user.name}</h2>
-      <h3>added blogs</h3>
-      {user && user.blogs && user.blogs.map(b => (
-        <li key={b.id}>{b.title}</li>
-      ))}
+      {user &&
+      <>
+        <h3 className='display-name'>{user.name}</h3>
+        <div className='username'>@{user.username}</div>
+        <div className='username'>Total blogs: {user.blogs.length}</div>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {user && user.blogs && user.blogs.map(b =>
+                <TableRow key={b.id}>
+                  <TableCell>
+                    <div>
+                      <a href={`/${b.id}`}>{b.title}</a>
+                      {b.author}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>}
     </>
   )
 }

@@ -1,6 +1,14 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getUsers } from '../../requests'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@mui/material'
 
 const UsersPage = () => {
   const { data: users, isLoading, isError } = useQuery({
@@ -19,12 +27,22 @@ const UsersPage = () => {
 
   return (
     <div>
-      {users && users.map(u => (
-        <div key={u.id}>
-          <a href={`/users/${u.id}`}>{u.name}</a>
-          <div> has {u.blogs.length} blogs</div>
-        </div>
-      ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {users && users.map(u =>
+              <TableRow key={u.id}>
+                <TableCell>
+                  <div>
+                    <a href={`/users/${u.id}`}>{u.name}</a>
+                    <div className='username'>Total blogs: {u.blogs.length}</div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

@@ -7,6 +7,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { deleteBlog, likeBlog } from '../../requests'
 import { ERROR, SUCCESS } from '../../model'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  TextField
+} from '@mui/material'
 
 
 const BlogPage = () => {
@@ -155,17 +164,20 @@ const BlogPage = () => {
       {blog &&
       <div>
         <h2>{blog.title}</h2>
-        <a href={blog.url}>{blog.url}</a>
+        <div>
+          Link:
+          <a href={blog.url}>{blog.url}</a>
+        </div>
         <div>
           Likes: {blog.likes}
           <button onClick={onLike}>Like</button>
         </div>
-        <div>added by {blog.user.name}</div>
+        <div>Added by {blog.user.name}</div>
         {blog.user.username === user.username && <button onClick={onDelete}>remove</button>}
-        <h3>comments</h3>
+        <h3>Comments</h3>
         <form onSubmit={onComment}>
           <div>
-            <input
+            <TextField
               type="text"
               value={comment}
               name="title"
@@ -174,9 +186,21 @@ const BlogPage = () => {
             <button type="submit">Comment</button>
           </div>
         </form>
-        {blog.comments.map((c, index) => (
-          <li key={index}>{c}</li>
-        ))}
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {blog.comments.map((c, index) =>
+                <TableRow key={index}>
+                  <TableCell>
+                    <div>
+                      <div>{c}</div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>}
     </>
   )

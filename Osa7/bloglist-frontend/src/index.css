@@ -1,32 +1,59 @@
 :root {
-    --primary-color: #1976d2;
-    --secondary-color: #dc004e;
-    --background-color: #f5f5f5;
-    --text-color: #333333;
-    --font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-    --spacing-unit: 8px;
+  --primary-color: #1976d2;
+  --secondary-color: #dc004e;
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  --spacing-unit: 8px;
 }
 
-html,
 body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
 }
 
-#root {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+  margin: var(--spacing-unit);
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: calc(var(--spacing-unit) / 2);
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    filter: brightness(70%);
+  }
 }
 
-body,
-button,
-input,
-textarea {
-    font-family: var(--font-family);
+a {
+  color: var(--secondary-color);
+  cursor: pointer;
+  margin: var(--spacing-unit);
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+h1 {
+  font-size: 40px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+text {
+  font-size: 20px !important;
 }

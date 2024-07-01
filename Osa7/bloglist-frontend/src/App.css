@@ -19,3 +19,12 @@
 .blog {
     color: black;
 }
+
+.username {
+    filter: opacity(60%);
+    margin: var(--spacing-unit);
+}
+
+.display-name {
+    margin: var(--spacing-unit);
+}
