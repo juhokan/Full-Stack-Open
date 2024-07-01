@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const url = 'http://localhost:3003/api/blogs'
+const loginUrl = 'http://localhost:3003/api/login'
 
 export const getBlogs = () =>
   axios.get(url).then(res => res.data)
@@ -32,3 +33,6 @@ export const deleteBlog = ({ token, id }) => {
     },
   }).then(res => res.data)
 }
+
+export const login = (credentials) =>
+  axios.post(loginUrl, credentials).then(res => res.data)

@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react'
-import loginService from '../services/login'
+import { useMutation } from '@tanstack/react-query'
 import Notification from './Notification'
 import { NotificationContext, UserContext } from '../context'
 import { ERROR, SUCCESS } from '../model'
+import { login } from '../requests'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -10,20 +11,24 @@ const LoginForm = () => {
   const { setUser } = useContext(UserContext)
   const { messageDispatch, setType } = useContext(NotificationContext)
 
-  const handleLogin = async event => {
-    event.preventDefault()
-
-    try {
-      const newUser = await loginService.login({ username, password })
+  const { mutate: loginMutate } = useMutation({
+    mutationFn: login,
+    onSuccess: (newUser) => {
       setUser(newUser)
       resetForm()
       setType(SUCCESS)
       displayMessage('Logged in')
-    } catch (err) {
+    },
+    onError: (err) => {
       console.error(err)
       setType(ERROR)
       displayMessage('Wrong username or password')
     }
+  })
+
+  const handleLogin = event => {
+    event.preventDefault()
+    loginMutate({ username, password })
   }
 
   const resetForm = () => {

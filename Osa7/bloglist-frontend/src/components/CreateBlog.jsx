@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react'
-import { UserContext, NotificationContext } from '../context'
+import { UserContext, NotificationContext, BlogContext } from '../context'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ERROR, SUCCESS } from '../model'
 import { createBlog } from '../requests'
 
 const CreateBlog = () => {
   const { user } = useContext(UserContext)
+  const { blogs, setBlogs } = useContext(BlogContext)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -14,7 +15,8 @@ const CreateBlog = () => {
 
   const { mutate } = useMutation({
     mutationFn: createBlog,
-    onSuccess: () => {
+    onSuccess: (newBlog) => {
+      setBlogs(...blogs, newBlog)
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
       setType(SUCCESS)
       messageDispatch({
