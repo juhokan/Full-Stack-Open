@@ -10,9 +10,4 @@ export const BlogContext = React.createContext({
   setBlogs: _ => {},
 })
 
-export const NotificationContext = React.createContext({
-  message: null,
-  setMessage: _ => {},
-  type: null,
-  setType: _ => {},
-})
+export const NotificationContext = React.createContext()

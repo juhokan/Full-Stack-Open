@@ -2,12 +2,13 @@ import React, { useState, useContext } from 'react'
 import loginService from '../services/login'
 import Notification from './Notification'
 import { NotificationContext, UserContext } from '../context'
+import { ERROR, SUCCESS } from '../model'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { setUser } = useContext(UserContext)
-  const { setMessage, setType } = useContext(NotificationContext)
+  const { messageDispatch, setType } = useContext(NotificationContext)
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -16,9 +17,12 @@ const LoginForm = () => {
       const newUser = await loginService.login({ username, password })
       setUser(newUser)
       resetForm()
+      setType(SUCCESS)
+      displayMessage('Logged in')
     } catch (err) {
       console.error(err)
-      displayMessage('Wrong username or password', 'error')
+      setType(ERROR)
+      displayMessage('Wrong username or password')
     }
   }
 
@@ -27,19 +31,23 @@ const LoginForm = () => {
     setPassword('')
   }
 
-  const displayMessage = (message, type) => {
-    setMessage(message)
-    setType(type)
+  const displayMessage = (message) => {
+    messageDispatch({
+      type: 'MESSAGE',
+      payload: message
+    })
     setTimeout(() => {
-      setMessage(null)
-      setType(null)
+      messageDispatch({
+        type: 'RESET'
+      })
+      setType('')
     }, 2000)
   }
 
   return (
     <>
       <h2>Login</h2>
-      <Notification />
+      <Notification/>
       <form onSubmit={handleLogin}>
         <div>
           username

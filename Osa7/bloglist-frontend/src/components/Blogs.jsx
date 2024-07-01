@@ -11,7 +11,6 @@ const Blogs = () => {
   const { user, setUser } = useContext(UserContext)
   const [username, setUsername] = useState('')
   const [isVisible, setIsVisible] = useState(false)
-  const { message, type } = useContext(NotificationContext)
 
   useEffect(() => {
     try {
@@ -43,7 +42,7 @@ const Blogs = () => {
   return (
     <>
       <h2>Blogs</h2>
-      <Notification message={message} type={type} />
+      <Notification />
       <p>
         {username} logged in
         <button onClick={handleLogout}>Log Out</button>

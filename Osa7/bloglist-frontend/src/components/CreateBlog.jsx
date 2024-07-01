@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import blogService from '../services/blogs'
 import { BlogContext, UserContext, NotificationContext } from '../context'
+import { ERROR, SUCCESS } from '../model'
 
 const CreateBlog = () => {
   const { setBlogs } = useContext(BlogContext)
@@ -8,7 +9,7 @@ const CreateBlog = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const { setMessage, setType } = useContext(NotificationContext)
+  const { messageDispatch, setType } = useContext(NotificationContext)
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -17,11 +18,12 @@ const CreateBlog = () => {
     if (response.status !== 400 && response.status !== 401) {
       const updatedBlogs = await blogService.getAll()
       setBlogs(updatedBlogs)
+      setType(SUCCESS)
       displayMessage(
-        `A new blog ${response.data.title} by ${response.data.author} created!`,
-        'success'
+        `A new blog ${response.data.title} by ${response.data.author} created!`
       )
     } else {
+      setType(ERROR)
       displayMessage('Error creating blog!', 'error')
     }
 
@@ -35,12 +37,16 @@ const CreateBlog = () => {
     setUrl('')
   }
 
-  const displayMessage = (message, type) => {
-    setMessage(message)
-    setType(type)
+  const displayMessage = (message) => {
+    messageDispatch({
+      type: 'MESSAGE',
+      payload: message
+    })
     setTimeout(() => {
-      setMessage(null)
-      setType(null)
+      messageDispatch({
+        type: 'RESET'
+      })
+      setType('')
     }, 2000)
   }
 

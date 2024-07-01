@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
 import { UserContext, BlogContext, NotificationContext } from './context'
@@ -9,8 +9,20 @@ const USER_JSON = 'user_json'
 const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [type, setType] = useState(null)
+  const [type, setType] = useState('')
+
+  const messageReducer = (state, action) => {
+    switch (action.type) {
+    case 'MESSAGE':
+      return action.payload
+    case 'RESET':
+      return null
+    default:
+      return state
+    }
+  }
+
+  const [message, messageDispatch] = useReducer(messageReducer, '')
 
   useEffect(() => {
     initUser()
@@ -27,7 +39,7 @@ const App = () => {
 
   const initUser = () => {
     const userJSON = window.localStorage.getItem(USER_JSON)
-    if (userJSON !== undefined) {
+    if (userJSON) {
       setUser(JSON.parse(userJSON))
     }
   }
@@ -35,7 +47,7 @@ const App = () => {
   return (
     <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
       <BlogContext.Provider value={{ blogs, setBlogs }}>
-        <NotificationContext.Provider value={{ message, setMessage, type, setType }}>
+        <NotificationContext.Provider value={{ message, messageDispatch, type, setType }}>
           <main>{user ? <Blogs /> : <LoginForm />}</main>
         </NotificationContext.Provider>
       </BlogContext.Provider>
