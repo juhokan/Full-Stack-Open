@@ -4,6 +4,7 @@ import { UserContext } from '../../context'
 import Blogs from '../blogs/Blogs'
 import LoginForm from '../login/LoginForm'
 import UsersPage from './UsersPage'
+import UserPage from './UserPage'
 
 const AppContainer = () => {
   const { user } = React.useContext(UserContext)
@@ -12,6 +13,7 @@ const AppContainer = () => {
       <Routes>
         <Route index element={user ? <Blogs /> : <LoginForm />} />
         <Route path='/users' element={<UsersPage />} />
+        <Route path='/users/:id' element={<UserPage />} />
       </Routes>
     </Router>
   )

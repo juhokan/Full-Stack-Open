@@ -10,6 +10,10 @@ export const getBlogs = () =>
 export const getUsers = () =>
   axios.get(usersUrl).then(res => res.data)
 
+export const getUser = (id) => {
+  axios.get(`${usersUrl}/${id}`).then(res => res.data )
+}
+
 export const createBlog = ({ newBlog, token }) =>
   axios.post(blogsUrl, newBlog, {
     headers: {

@@ -20,7 +20,10 @@ const UsersPage = () => {
   return (
     <div>
       {users && users.map(u => (
-        <div key={u.id}>{u.name} has {u.blogs.length} blogs</div>
+        <div key={u.id}>
+          <a href={`/users/${u.id}`}>{u.name}</a>
+          <div> has {u.blogs.length} blogs</div>
+        </div>
       ))}
     </div>
   )
