@@ -32,6 +32,9 @@ export const likeBlog = ({ newBlog, token, id }) =>
     },
   }).then(res => res.data)
 
+export const commentBlog = ({ comment, id }) =>
+  axios.post(`${blogsUrl}/${id}/comments`, comment).then(res => res.data)
+
 export const deleteBlog = ({ token, id }) => {
   console.log(token)
   axios.delete(`${blogsUrl}/${id}`, {

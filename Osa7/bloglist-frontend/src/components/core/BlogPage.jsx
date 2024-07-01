@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { getBlog } from '../../requests'
+import { commentBlog, getBlog } from '../../requests'
 import { UserContext, NotificationContext } from '../../context'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
@@ -11,6 +11,7 @@ import { ERROR, SUCCESS } from '../../model'
 
 const BlogPage = () => {
   const id = useParams().id
+  const [comment, setComment] = useState('')
   const { user } = useContext(UserContext)
   const { messageDispatch, setType } = useContext(NotificationContext)
   const queryClient = useQueryClient()
@@ -90,6 +91,38 @@ const BlogPage = () => {
     },
   })
 
+  const { mutate: commentMutate } = useMutation({
+    mutationFn: commentBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      setType(SUCCESS)
+      messageDispatch({
+        type: 'MESSAGE',
+        payload: `comment ${comment} added`,
+      })
+      setTimeout(() => {
+        messageDispatch({
+          type: 'RESET',
+        })
+        setType('')
+        setComment('')
+      }, 3000)
+    },
+    onError: () => {
+      setType(ERROR)
+      messageDispatch({
+        type: 'MESSAGE',
+        payload: 'error commenting blog',
+      })
+      setTimeout(() => {
+        messageDispatch({
+          type: 'RESET',
+        })
+        setType('')
+      }, 3000)
+    },
+  })
+
   const onLike = (e) => {
     e.preventDefault()
     const content = {
@@ -112,6 +145,11 @@ const BlogPage = () => {
     }
   }
 
+  const onComment = (e) => {
+    e.preventDefault()
+    commentMutate({ comment: { comments: comment }, id: blog.id })
+  }
+
   return (
     <>
       {blog &&
@@ -125,6 +163,17 @@ const BlogPage = () => {
         <div>added by {blog.user.name}</div>
         {blog.user.username === user.username && <button onClick={onDelete}>remove</button>}
         <h3>comments</h3>
+        <form onSubmit={onComment}>
+          <div>
+            <input
+              type="text"
+              value={comment}
+              name="title"
+              onChange={({ target }) => setComment(target.value)}
+            />
+            <button type="submit">Comment</button>
+          </div>
+        </form>
         {blog.comments.map((c, index) => (
           <li key={index}>{c}</li>
         ))}
