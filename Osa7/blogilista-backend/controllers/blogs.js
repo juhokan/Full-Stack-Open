@@ -106,4 +106,43 @@ blogsRouter.put('/:id', async (request, response, next) => {
   }
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  try {
+    const blog = await Blog.findById(id).populate('user', { username: 1, name: 1 });
+    if (blog) {
+      response.json(blog);
+    } else {
+      response.status(404).json({ error: 'Blog not found' });
+    }
+  } catch (error) {
+    response.status(500).json({ error: 'something went wrong' });
+  }
+});
+
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { id } = request.params;
+  const { comments } = request.body;
+
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      { $push: { comments: comments } },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return response.status(404).json({ error: 'Blog not found' });
+    }
+
+    response.json(updatedBlog);
+  } catch (error) {
+    console.error(error.message);
+    response.status(400).json({ error: 'Something went wrong' });
+  }
+});
+
+
 module.exports = blogsRouter

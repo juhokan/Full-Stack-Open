@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getBlog } from '../../requests'
@@ -16,12 +16,17 @@ const BlogPage = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-
   const { data: blog } = useQuery({
     queryKey: ['blog'],
     queryFn:() => getBlog(id),
     retry: 1
   })
+
+  useEffect(() => {
+    if (blog) {
+      console.log(blog.comments)
+    }
+  }, [blog])
 
   const { mutate: likeMutate } = useMutation({
     mutationFn: likeBlog,
@@ -119,6 +124,10 @@ const BlogPage = () => {
         </div>
         <div>added by {blog.user.name}</div>
         {blog.user.username === user.username && <button onClick={onDelete}>remove</button>}
+        <h3>comments</h3>
+        {blog.comments.map((c, index) => (
+          <li key={index}>{c}</li>
+        ))}
       </div>}
     </>
   )
