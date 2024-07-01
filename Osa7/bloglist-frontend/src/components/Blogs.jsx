@@ -2,9 +2,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Blog from './Blog'
 import blogService from '../services/blogs'
-import { BlogContext, UserContext, NotificationContext } from '../context'
+import { BlogContext, UserContext } from '../context'
+import { useQuery } from '@tanstack/react-query'
 import CreateBlog from './CreateBlog'
 import Notification from './Notification'
+import { getBlogs } from '../requests'
 
 const Blogs = () => {
   const { blogs, setBlogs } = useContext(BlogContext)
@@ -18,17 +20,7 @@ const Blogs = () => {
     } catch (error) {
       console.error(error)
     }
-    fetchBlogs()
   }, [user])
-
-  const fetchBlogs = async () => {
-    try {
-      const blogsData = await blogService.getAll()
-      setBlogs(blogsData)
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const handleLogout = event => {
     event.preventDefault()
@@ -38,6 +30,24 @@ const Blogs = () => {
   const toggleVisibility = () => {
     setIsVisible(!isVisible)
   }
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs,
+    retry: 1
+  })
+
+  console.log(JSON.parse(JSON.stringify(result)))
+
+  if (result.isLoading) {
+    return <div>loading data...</div>
+  }
+
+  if (result.isError) {
+    return <div>blog service is not available due to problems in the server</div>
+  }
+
+  setBlogs(result.data)
 
   return (
     <>

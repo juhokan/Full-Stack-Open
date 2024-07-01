@@ -1,13 +1,7 @@
 import React from 'react'
 
-export const UserContext = React.createContext({
-  user: null,
-  setUser: _ => {},
-})
+export const UserContext = React.createContext()
 
-export const BlogContext = React.createContext({
-  blog: null,
-  setBlogs: _ => {},
-})
+export const BlogContext = React.createContext()
 
 export const NotificationContext = React.createContext()

@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react'
-import blogService from '../services/blogs'
 import { BlogContext, UserContext, NotificationContext } from '../context'
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { ERROR, SUCCESS } from '../model'
+import { createBlog, getBlogs } from '../requests'
 
 const CreateBlog = () => {
   const { setBlogs } = useContext(BlogContext)
@@ -10,27 +11,46 @@ const CreateBlog = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const { messageDispatch, setType } = useContext(NotificationContext)
+  const queryClient = useQueryClient()
 
-  const handleSubmit = async event => {
-    event.preventDefault()
-    const response = await blogService.postNewBlog(title, author, url, user.token)
-    console.log(response)
-    if (response.status !== 400 && response.status !== 401) {
-      const updatedBlogs = await blogService.getAll()
-      setBlogs(updatedBlogs)
+  const { mutate } = useMutation({
+    mutationFn: createBlog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
       setType(SUCCESS)
-      displayMessage(
-        `A new blog ${response.data.title} by ${response.data.author} created!`
-      )
-    } else {
-      setType(ERROR)
-      displayMessage('Error creating blog!', 'error')
+      messageDispatch({
+        type: 'MESSAGE',
+        payload: 'new blog created',
+      })
+      setTimeout(() => {
+        messageDispatch({
+          type: 'RESET',
+        })
+        setType('')
+      }, 3000)
+    },
+    onError: () => {
+      messageDispatch({
+        type: 'MESSAGE',
+        payload: 'error adding anecdote',
+      })
+      setTimeout(() => {
+        messageDispatch({
+          type: 'RESET',
+        })
+      }, 3000)
+    },
+  })
+
+  const onCreate = (event) => {
+    event.preventDefault()
+    const content = { title: title, author:author, url: url }
+    if (content) {
+      resetForm()
+      mutate({ newBlog: content, token: user.token })
     }
-
-    console.log(response)
-
-    resetForm()
   }
+
   const resetForm = () => {
     setTitle('')
     setAuthor('')
@@ -53,7 +73,7 @@ const CreateBlog = () => {
   return (
     <>
       <h2>Create New</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onCreate}>
         <div>
           Title
           <input
