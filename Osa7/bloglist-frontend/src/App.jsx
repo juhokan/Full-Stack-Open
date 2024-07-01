@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react'
+import { Container } from '@mui/material'
 import { UserContext, BlogContext, NotificationContext } from './context'
-import '/./index.css'
+import './App.css'
 import AppContainer from './components/core/AppContainer'
 import MenuBar from './components/core/MenuBar'
 import Header from './components/core/Header'
@@ -49,9 +50,11 @@ const App = () => {
     <UserContext.Provider value={{ user, setUser: setAndSaveUser }}>
       <BlogContext.Provider value={{ blogs, setBlogs }}>
         <NotificationContext.Provider value={{ message, messageDispatch, type, setType }}>
-          <MenuBar />
-          <Header />
-          <AppContainer />
+          <Container>
+            <MenuBar />
+            <Header />
+            <AppContainer />
+          </Container>
         </NotificationContext.Provider>
       </BlogContext.Provider>
     </UserContext.Provider>

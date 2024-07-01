@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Blog from './Blog'
-import { BlogContext, UserContext } from '../../context'
+import { BlogContext } from '../../context'
 import { useQuery } from '@tanstack/react-query'
 import CreateBlog from './CreateBlog'
 import { getBlogs } from '../../requests'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@mui/material'
 
 const Blogs = () => {
   const { blogs, setBlogs } = useContext(BlogContext)
@@ -43,8 +51,19 @@ const Blogs = () => {
         <button onClick={toggleVisibility}>New blog</button>
       )}
 
-      {Array.isArray(blogs) &&
-        blogs.sort((a, b) => b.likes - a.likes).map(blog => <Blog key={blog.id} blog={blog} />)}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {Array.isArray(blogs) && blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Blog blog={blog} />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   )
 }

@@ -125,7 +125,7 @@ const Blog = ({ blog }) => {
     )
   }
 
-  return <div className="blog">{isVisible ? <VisibleBlog /> : <HiddenBlog />}</div>
+  return <div>{isVisible ? <VisibleBlog /> : <HiddenBlog />}</div>
 }
 
 Blog.propTypes = {

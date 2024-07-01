@@ -14,6 +14,7 @@ const AppContainer = () => {
       <Routes>
         <Route index element={user ? <Blogs /> : <LoginForm />} />
         <Route path='/users' element={<UsersPage />}></Route>
+        <Route path='/users/:id' element={<UserPage />} />
         <Route path=':id' element={<BlogPage />} />
       </Routes>
     </Router>
