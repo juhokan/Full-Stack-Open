@@ -7,6 +7,9 @@ const loginUrl = 'http://localhost:3003/api/login'
 export const getBlogs = () =>
   axios.get(blogsUrl).then(res => res.data)
 
+export const getBlog = (id) =>
+  axios.get(`${blogsUrl}/${id}`).then(res => res.data )
+
 export const getUsers = () =>
   axios.get(usersUrl).then(res => res.data)
 

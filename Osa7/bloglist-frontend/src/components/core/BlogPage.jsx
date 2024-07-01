@@ -1,16 +1,27 @@
-import React, { useState } from 'react'
-import { UserContext, NotificationContext, BlogContext } from '../../context'
+import React from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getBlog } from '../../requests'
+import { UserContext, NotificationContext } from '../../context'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
-import PropTypes from 'prop-types'
 import { deleteBlog, likeBlog } from '../../requests'
 import { ERROR, SUCCESS } from '../../model'
 
-const Blog = ({ blog }) => {
-  const [isVisible, setIsVisible] = useState(false)
+
+const BlogPage = () => {
+  const id = useParams().id
   const { user } = useContext(UserContext)
   const { messageDispatch, setType } = useContext(NotificationContext)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+
+  const { data: blog } = useQuery({
+    queryKey: ['blog'],
+    queryFn:() => getBlog(id),
+    retry: 1
+  })
 
   const { mutate: likeMutate } = useMutation({
     mutationFn: likeBlog,
@@ -92,44 +103,25 @@ const Blog = ({ blog }) => {
     e.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       deleteMutate({ token: user.token, id: blog.id })
+      navigate('/')
     }
   }
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible)
-  }
-
-  const HiddenBlog = () => {
-    return (
+  return (
+    <>
+      {blog &&
       <div>
-        <a href={`/${blog.id}`}>{blog.title}</a> {blog.author}
-        <button onClick={toggleVisibility}>show</button>
-      </div>
-    )
-  }
-
-  const VisibleBlog = () => {
-    return (
-      <div>
-        <div>
-          <a href={`/${blog.id}`}>{blog.title}</a> {blog.author} <button onClick={toggleVisibility}>hide</button>
-        </div>
-        <div>{blog.url}</div>
+        <h2>{blog.title}</h2>
+        <a href={blog.url}>{blog.url}</a>
         <div>
           Likes: {blog.likes}
           <button onClick={onLike}>Like</button>
         </div>
-        <div>{blog.user.name}</div>
+        <div>added by {blog.user.name}</div>
         {blog.user.username === user.username && <button onClick={onDelete}>remove</button>}
-      </div>
-    )
-  }
-
-  return <div className="blog">{isVisible ? <VisibleBlog /> : <HiddenBlog />}</div>
+      </div>}
+    </>
+  )
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-}
-
-export default Blog
+export default BlogPage
