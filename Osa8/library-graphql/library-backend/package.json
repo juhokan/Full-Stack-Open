@@ -4,11 +4,14 @@
   "description": "library backend for graphql",
   "main": "backend.js",
   "scripts": {
-    "dev": "node backend.js"
+    "dev": "node index.js"
   },
   "author": "Juho Kangas",
   "dependencies": {
     "@apollo/server": "^4.10.4",
-    "graphql": "^16.9.0"
+    "dotenv": "^16.4.5",
+    "graphql": "^16.9.0",
+    "mongoose": "^8.4.4",
+    "mongoose-unique-validator": "^5.0.1"
   }
 }
