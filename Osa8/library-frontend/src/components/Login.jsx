@@ -22,8 +22,8 @@ const Login = () => {
     },
     onCompleted: (data) => {
       const token = data.login.value
+      console.log(token)
       setToken(token)
-      navigate('/')
     }
   })
 
@@ -35,7 +35,7 @@ const Login = () => {
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={() => handleSubmit()}>
+      <form onSubmit={handleSubmit}>
         <div>
           Username:
           <input

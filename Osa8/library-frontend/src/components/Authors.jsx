@@ -25,6 +25,14 @@ const SET_BIRTHYEAR = gql`
   }
 `
 
+const CURRENT_USER = gql`
+  query {
+    me {
+      favoriteGenre
+    }
+  }
+`
+
 const Authors = () => {
   const { loading, error, data } = useQuery(ALL_AUTHORS, {
     pollInterval: 2000
@@ -33,6 +41,16 @@ const Authors = () => {
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [birthYear, setBirthYear] = useState('')
   const { token } = useContext(TokenContext)
+
+  const { data: userData } = useQuery(CURRENT_USER, {
+    context: {
+      headers: {
+        authorization: token ? `Bearer ${token}` : '',
+      }
+    }
+  })
+
+  console.log(userData)
 
   const [setBirthyearMutation] = useMutation(SET_BIRTHYEAR, {
     context: {

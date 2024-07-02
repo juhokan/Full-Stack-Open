@@ -27,6 +27,7 @@ const MenuBar = () => {
         :
         <button onClick={() => handleLogOut('/')}>log out</button>
       }
+      <button onClick={() => handleNavigate('/recommendations')}>recommendations</button>
     </div>
   )
 }

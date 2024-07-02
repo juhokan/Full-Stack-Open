@@ -95,7 +95,16 @@ const resolvers = {
     },
     allAuthors: async () => await Author.find({}),
     me: (root, args, context) => {
-      return context.currentUser
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          }
+        })
+      }
+      return currentUser
     }
   },
   Author: {

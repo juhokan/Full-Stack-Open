@@ -3,7 +3,8 @@ import Authors from './Authors'
 import Books from './Books'
 import MenuBar from './MenuBar'
 import NewBook from './NewBook'
-import Login from './login'
+import Login from './Login'
+import Recommendations from './Recommendations'
 
 const AppContainer = () => {
   return (
@@ -14,6 +15,7 @@ const AppContainer = () => {
         <Route path='/books' element={<Books />} />
         <Route path='/add' element={<NewBook />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/recommendations' element={<Recommendations />} />
       </Routes>
     </Router>
   )
