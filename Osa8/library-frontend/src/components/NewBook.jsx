@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
+import { TokenContext } from '../context'
 
 const CREATE_BOOK = gql`
   mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
@@ -26,7 +27,14 @@ const NewBook = () => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+  const { token } = useContext(TokenContext)
+
   const [createBookMutation] = useMutation(CREATE_BOOK, {
+    context: {
+      headers: {
+        authorization: token ? `Bearer ${token}` : '',
+      }
+    },
     onError: (error) => {
       console.error('Mutation error:', error.message)
     },

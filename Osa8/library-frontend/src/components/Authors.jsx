@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { gql, useQuery, useMutation } from '@apollo/client'
+import { TokenContext } from '../context'
 
 const ALL_AUTHORS = gql`
   query {
@@ -31,8 +32,14 @@ const Authors = () => {
 
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [birthYear, setBirthYear] = useState('')
+  const { token } = useContext(TokenContext)
 
   const [setBirthyearMutation] = useMutation(SET_BIRTHYEAR, {
+    context: {
+      headers: {
+        authorization: token ? `Bearer ${token}` : '',
+      }
+    },
     onError: (error) => {
       console.error('Mutation error:', error)
     },
