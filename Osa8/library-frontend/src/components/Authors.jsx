@@ -1,5 +1,5 @@
-import React from 'react'
-import { gql, useQuery } from '@apollo/client'
+import React, { useState } from 'react'
+import { gql, useQuery, useMutation } from '@apollo/client'
 
 const ALL_AUTHORS = gql`
   query {
@@ -12,13 +12,40 @@ const ALL_AUTHORS = gql`
   }
 `
 
+const SET_BIRTHYEAR = gql`
+  mutation setBirthyear($name: String!, $born: Int!) {
+    editAuthor(name: $name, setBornTo: $born) {
+      name
+      born
+    }
+  }
+`
+
 const Authors = () => {
   const { loading, error, data } = useQuery(ALL_AUTHORS, {
     pollInterval: 2000
   })
 
+  const [selectedAuthor, setSelectedAuthor] = useState('')
+  const [birthYear, setBirthYear] = useState('')
+
+  const [ setBirthyearMutation ] = useMutation(SET_BIRTHYEAR, {
+    onError: (error) => {
+      console.error('Mutation error:', error)
+    }
+  })
+
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
+
+  const handleSetBirthyear = async () => {
+    if (!selectedAuthor || !birthYear) {
+      return
+    }
+    setBirthyearMutation({ variables: { name: selectedAuthor, born: parseInt(birthYear) } })
+    setSelectedAuthor('')
+    setBirthYear('')
+  }
 
   return (
     <div>
@@ -41,6 +68,23 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
+      <h3>Set birthyear</h3>
+      <select
+        value={selectedAuthor}
+        onChange={(e) => setSelectedAuthor(e.target.value)}
+      >
+        <option value="">Select an author</option>
+        {data.allAuthors.filter(a => !a.born).map((author) => (
+          <option key={author.id} value={author.name}>{author.name}</option>
+        ))}
+      </select>
+      <input
+        type="number"
+        placeholder="Enter birth year"
+        value={birthYear}
+        onChange={(e) => setBirthYear(e.target.value)}
+      />
+      <button onClick={handleSetBirthyear}>Set Birthyear</button>
     </div>
   )
 }
