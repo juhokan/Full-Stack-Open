@@ -1,0 +1,14 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "library backend for graphql",
+  "main": "backend.js",
+  "scripts": {
+    "dev": "node backend.js"
+  },
+  "author": "Juho Kangas",
+  "dependencies": {
+    "@apollo/server": "^4.10.4",
+    "graphql": "^16.9.0"
+  }
+}
