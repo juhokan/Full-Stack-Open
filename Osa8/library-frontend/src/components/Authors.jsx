@@ -4,10 +4,12 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 const ALL_AUTHORS = gql`
   query {
     allAuthors {
+      _id
       name
       born
-      bookCount
-      id
+      books {
+        _id
+      }
     }
   }
 `
@@ -15,6 +17,7 @@ const ALL_AUTHORS = gql`
 const SET_BIRTHYEAR = gql`
   mutation setBirthyear($name: String!, $born: Int!) {
     editAuthor(name: $name, setBornTo: $born) {
+      _id
       name
       born
     }
@@ -29,10 +32,11 @@ const Authors = () => {
   const [selectedAuthor, setSelectedAuthor] = useState('')
   const [birthYear, setBirthYear] = useState('')
 
-  const [ setBirthyearMutation ] = useMutation(SET_BIRTHYEAR, {
+  const [setBirthyearMutation] = useMutation(SET_BIRTHYEAR, {
     onError: (error) => {
       console.error('Mutation error:', error)
-    }
+    },
+    refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
   if (loading) return <div>Loading...</div>
@@ -42,7 +46,7 @@ const Authors = () => {
     if (!selectedAuthor || !birthYear) {
       return
     }
-    setBirthyearMutation({ variables: { name: selectedAuthor, born: parseInt(birthYear) } })
+    await setBirthyearMutation({ variables: { name: selectedAuthor, born: parseInt(birthYear) } })
     setSelectedAuthor('')
     setBirthYear('')
   }
@@ -60,10 +64,10 @@ const Authors = () => {
         </thead>
         <tbody>
           {data.allAuthors.map((author) => (
-            <tr key={author.id}>
+            <tr key={author._id}>
               <td>{author.name}</td>
               <td>{author.born}</td>
-              <td>{author.bookCount}</td>
+              <td>{author.books.length}</td>
             </tr>
           ))}
         </tbody>
@@ -75,7 +79,7 @@ const Authors = () => {
       >
         <option value="">Select an author</option>
         {data.allAuthors.filter(a => !a.born).map((author) => (
-          <option key={author.id} value={author.name}>{author.name}</option>
+          <option key={author._id} value={author.name}>{author.name}</option>
         ))}
       </select>
       <input

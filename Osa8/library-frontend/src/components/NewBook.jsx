@@ -11,7 +11,9 @@ const CREATE_BOOK = gql`
     ) {
       title
       published
-      author
+      author {
+        name
+      }
       genres
     }
   }
@@ -24,7 +26,7 @@ const NewBook = () => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [ createBookMutation, { error } ] = useMutation(CREATE_BOOK, {
+  const [createBookMutation, { error }] = useMutation(CREATE_BOOK, {
     onError: (error) => {
       console.error('Mutation error:', error)
     },
