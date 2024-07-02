@@ -26,9 +26,9 @@ const NewBook = () => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [createBookMutation, { error }] = useMutation(CREATE_BOOK, {
+  const [createBookMutation] = useMutation(CREATE_BOOK, {
     onError: (error) => {
-      console.error('Mutation error:', error)
+      console.error('Mutation error:', error.message)
     },
     onCompleted: () => {
       setTitle('')
@@ -96,7 +96,6 @@ const NewBook = () => {
         )}
         <button type="submit">Create Book</button>
       </form>
-      {error && <p>Error: {error.message}</p>}
     </div>
   )
 }
