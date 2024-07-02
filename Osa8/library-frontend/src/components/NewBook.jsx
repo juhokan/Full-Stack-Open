@@ -1,70 +1,100 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { gql, useMutation } from '@apollo/client'
 
-const NewBook = (props) => {
+const CREATE_BOOK = gql`
+  mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
+    addBook(
+      title: $title,
+      published: $published,
+      author: $author,
+      genres: $genres
+    ) {
+      title
+      published
+      author
+      genres
+    }
+  }
+`
+
+const NewBook = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  if (!props.show) {
-    return null
-  }
+  const [ createBookMutation, { error } ] = useMutation(CREATE_BOOK, {
+    onError: (error) => {
+      console.error('Mutation error:', error)
+    },
+    onCompleted: () => {
+      setTitle('')
+      setPublished('')
+      setAuthor('')
+      setGenres([])
+      setGenre('')
+    }
+  })
 
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
-
-    setTitle('')
-    setPublished('')
-    setAuthor('')
-    setGenres([])
-    setGenre('')
+    createBookMutation({ variables: { title, published: parseInt(published), author, genres } })
   }
 
   const addGenre = () => {
-    setGenres(genres.concat(genre))
-    setGenre('')
+    if (genre.trim() !== '') {
+      setGenres([...genres, genre.trim()])
+      setGenre('')
+    }
   }
 
   return (
     <div>
+      <h2>Create a New Book</h2>
       <form onSubmit={submit}>
         <div>
-          title
+          Title:
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            required
           />
         </div>
         <div>
-          author
+          Author:
           <input
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
+            required
           />
         </div>
         <div>
-          published
+          Published:
           <input
             type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
+            required
           />
         </div>
         <div>
+          Genre:
           <input
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">
-            add genre
+          <button type="button" onClick={addGenre}>
+            Add Genre
           </button>
         </div>
-        <div>genres: {genres.join(' ')}</div>
-        <button type="submit">create book</button>
+        {genres.length > 0 && (
+          <div>Genres: {genres.join(', ')}</div>
+        )}
+        <button type="submit">Create Book</button>
       </form>
+      {error && <p>Error: {error.message}</p>}
     </div>
   )
 }

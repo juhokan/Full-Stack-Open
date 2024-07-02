@@ -13,7 +13,9 @@ const ALL_AUTHORS = gql`
 `
 
 const Authors = () => {
-  const { loading, error, data } = useQuery(ALL_AUTHORS)
+  const { loading, error, data } = useQuery(ALL_AUTHORS, {
+    pollInterval: 2000
+  })
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
