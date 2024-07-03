@@ -4,7 +4,7 @@ enum BmiCategory {
   Overweight = "Overweight or Obese",
 }
 
-const calculateBmi = (height: number, weight: number): string | null => {
+export const calculateBmi = (height: number, weight: number): string | null => {
   const bmi = weight / (height / 100) ** 2;
   switch (true) {
     case bmi < 18.5:
@@ -16,17 +16,4 @@ const calculateBmi = (height: number, weight: number): string | null => {
     default:
       return null;
   }
-}
-
-try {
-  const height: number = parseInt(process.argv[2]);
-  const weight: number = parseInt(process.argv[3]);
-
-  if (isNaN(height) || isNaN(weight)) {
-    throw new Error('Both height and weight need to be numbers.');
-  }
-
-  console.log(calculateBmi(height, weight));
-} catch (error) {
-  console.error('Error:', error.message);
 }

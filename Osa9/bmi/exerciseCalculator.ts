@@ -45,7 +45,7 @@ try {
   const args = process.argv.slice(2).map(arg => parseFloat(arg));
   const target = args.pop();
 
-  if (args.length === 0 || isNaN(target)) {
+  if (args.length === 0 || target && isNaN(target)) {
     throw new Error('Please provide valid numbers for exercise data and target.');
   }
 
@@ -53,7 +53,9 @@ try {
     throw new Error('All exercise values must be numbers.');
   }
 
-  console.log(calculateExercises(args, target));
+  if (target) {
+    console.log(calculateExercises(args, target));
+  }
 } catch (error) {
   console.error('Error:', error.message);
 }
