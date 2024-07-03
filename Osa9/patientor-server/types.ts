@@ -4,11 +4,20 @@ export interface Diagnosis {
   readonly latin?: string
 }
 
+
 export interface Patient {
-  readonly id: string
+  id: string
   readonly name: string
   readonly dateOfBirth: string
   readonly ssn: string
-  readonly gender: string
+  readonly gender: Gender
   readonly occupation: string
+}
+
+export type NewPatientData = Omit<Patient, 'id'>;
+
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+  Other = 'other'
 }
