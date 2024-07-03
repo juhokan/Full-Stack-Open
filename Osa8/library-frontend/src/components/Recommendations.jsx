@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 import { TokenContext } from '../context'
 
@@ -10,27 +10,63 @@ const CURRENT_USER = gql`
   }
 `
 
+const GENRE_BOOKS = gql`
+  query AllBooks($genre: String) {
+  allBooks(genre: $genre) {
+    _id
+    title
+    genres
+    author {
+      name
+      born
+    }
+    published
+  }
+}
+`
+
 const Recommendations = () => {
   const { token } = useContext(TokenContext)
+  const [books, setBooks] = useState(null)
+  const [genre, setGenre] = useState('')
 
-  const { data: userData, loading, error } = useQuery(CURRENT_USER, {
+  const { data: userData } = useQuery(CURRENT_USER, {
     context: {
       headers: {
         authorization: token ? `Bearer ${token}` : '',
       },
     },
+    onCompleted(data) {
+      setGenre(data?.me.favoriteGenre)
+    },
     pollInterval: 100
   })
 
-  console.log(userData)
-
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  const { data: bookData } = useQuery(GENRE_BOOKS, {
+    variables: { genre: genre },
+    onError: (error) => {
+      console.error('Error fetching books:', error)
+    },
+    onCompleted(data) {
+      setBooks(data.allBooks)
+    }
+  })
 
   return (
     <div>
       <h2>Recommendations</h2>
-      <p>Favorite Genre: {userData.me.favoriteGenre}</p>
+      {userData?.me.favoriteGenre && (
+        <div>
+          <p>Favorite Genre: {userData?.me.favoriteGenre || 'none'}</p>
+        </div>
+      )}
+      <div>
+        {bookData && books?.map(book => (
+          <li key={book._id}>
+            {book.title} by {book.author.name} (Published: {book.published})
+          </li>
+        ))}
+      </div>
     </div>
   )
 }
