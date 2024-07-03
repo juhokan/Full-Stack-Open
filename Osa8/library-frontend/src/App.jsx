@@ -2,15 +2,14 @@
 import { useState, useEffect } from 'react'
 import AppContainer from './components/AppContainer'
 import { TokenContext } from './context'
-import { gql, useApolloClient, useSubscription } from '@apollo/client'
-import { ALL_BOOKS, BOOK_ADDED } from './queries'
+import { useSubscription } from '@apollo/client'
+import { BOOK_ADDED } from './queries'
 
 const TOKEN = 'token'
 
 
 const App = () => {
   const [token, setToken] = useState('')
-  const client = useApolloClient()
 
   useEffect(() => {
     initToken()
@@ -20,6 +19,7 @@ const App = () => {
     onData: ({ data }) => {
       const addedBook = data.data.bookAdded
       window.alert(`${addedBook.title} added`)
+      console.log(`${addedBook.title} added`)
     }
   })
 
