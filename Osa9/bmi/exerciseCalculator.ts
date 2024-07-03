@@ -41,4 +41,19 @@ const calculateExercises = (exerciseArray: number[], target: number): ExerciseDa
   return data;
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const args = process.argv.slice(2).map(arg => parseFloat(arg));
+  const target = args.pop();
+
+  if (args.length === 0 || isNaN(target)) {
+    throw new Error('Please provide valid numbers for exercise data and target.');
+  }
+
+  if (args.some(isNaN)) {
+    throw new Error('All exercise values must be numbers.');
+  }
+
+  console.log(calculateExercises(args, target));
+} catch (error) {
+  console.error('Error:', error.message);
+}
