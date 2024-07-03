@@ -16,4 +16,4 @@ export const calculateBmi = (height: number, weight: number): string | null => {
     default:
       return null;
   }
-}
+};

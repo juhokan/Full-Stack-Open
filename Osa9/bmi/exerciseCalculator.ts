@@ -39,7 +39,7 @@ const calculateExercises = (exerciseArray: number[], target: number): ExerciseDa
   };
 
   return data;
-}
+};
 
 try {
   const args = process.argv.slice(2).map(arg => parseFloat(arg));
@@ -57,5 +57,7 @@ try {
     console.log(calculateExercises(args, target));
   }
 } catch (error) {
-  console.error('Error:', error.message);
+  if (error instanceof Error) {
+    console.error('Error:', error.message);
+  }
 }
