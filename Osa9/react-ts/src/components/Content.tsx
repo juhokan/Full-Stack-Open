@@ -1,28 +1,19 @@
-import React from 'react'
-
-interface CourseData {
-  readonly name: string
-  readonly exerciseCount: number
-}
+import React from 'react';
+import { CoursePart } from '../model';
+import Part from './Part';
 
 interface ContentProps {
-  readonly courses: CourseData[]
+  readonly courses: CoursePart[];
 }
 
 const Content: React.FC<ContentProps> = ({ courses }) => {
   return (
     <>
-     <p>
-        {courses[0].name} {courses[0].exerciseCount}
-      </p>
-      <p>
-        {courses[1].name} {courses[1].exerciseCount}
-      </p>
-      <p>
-        {courses[2].name} {courses[2].exerciseCount}
-      </p>
+      {courses && courses.map((c, i) => (
+        <Part key={i} part={c} />
+      ))}
     </>
-  )
+  );
 }
 
-export default Content
+export default Content;
