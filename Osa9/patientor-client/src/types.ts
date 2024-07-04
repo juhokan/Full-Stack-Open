@@ -10,7 +10,13 @@ export enum Gender {
   Other = "other"
 }
 
-interface BaseEntry {
+export enum EntryType {
+  Occupational = "OccupationalHealthcare",
+  Hospital = "Hospital",
+  HealthCheck = "HealthCheck"
+}
+
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -25,12 +31,12 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string
   endDate: string
 }
 
-interface Discharge {
+export interface Discharge {
   date: string
   criteria: string
 }
@@ -72,3 +78,5 @@ export interface Patient {
 }
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">
+
+export type NewEntryData = Omit<Entry, 'id'>

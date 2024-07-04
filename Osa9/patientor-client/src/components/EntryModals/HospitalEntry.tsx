@@ -26,7 +26,7 @@ const HospitalEntry: React.FC<HospitalEntryProps> = ({ entry, allDiagnoses }) =>
     }}>
       <div>Hospital entry {entry.description}</div><br/>
       {diagnoses?.map(d => (
-        <div>{d.code} {d.name}</div>
+        <div key={d.code}>{d.code} {d.name}</div>
       ))}
       <p>diagnosis by {entry.specialist}</p>
     </div>
