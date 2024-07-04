@@ -195,7 +195,7 @@ export const toNewEntryData = (object: unknown): NewEntryData => {
               description: parseDescription(object.description),
               date: parseDate(object.date),
               specialist: parseSpecialist(object.specialist),
-              diagnosisCodes: 'diagnosisCodes' in object ? parseDiagnosisCodes(object.diagnosisCodes) : undefined,
+              diagnosisCodes: parseDiagnosisCodes(object),
               employerName: parseEmployerName(object.employerName),
               sickLeave: 'sickLeave' in object ? parseSickLeave(object.sickLeave) : undefined,
               type: 'OccupationalHealthcare'

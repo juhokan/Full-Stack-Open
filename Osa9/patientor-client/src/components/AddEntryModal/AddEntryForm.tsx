@@ -41,16 +41,14 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ id, diagnoses }) => {
   const [healthCheckRating, setHealthCheckRating] = React.useState<HealthCheckRating | null>(null)
 
   useEffect(() => {
-    console.log(description)
-    console.log(date)
-    console.log(specialist)
     console.log(diagnosisCodes)
-    console.log(type)
-  }, [date, description, diagnosisCodes, specialist, type])
+  }, [diagnosisCodes])
   
 
   const submitEntry = async (entry: NewEntryData) => {
     if (id) {
+      console.log(entry)
+      
       await patients.createEntry(id, entry)
     }
   }
@@ -58,7 +56,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ id, diagnoses }) => {
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault()
     // Construct entry object based on type and submit
-    if (description && date && specialist && diagnosisCodes.length > 0 && type) {
+    if (description && date && specialist && diagnosisCodes && type) {
       const entryData: Omit<BaseEntry, 'id'> = {
         description,
         date,
@@ -76,7 +74,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ id, diagnoses }) => {
               ...entryData,
               type,
               employerName,
-              leave
+              sickLeave: leave
             }
             submitEntry(data as NewEntryData)
           }
