@@ -8,6 +8,7 @@ import AddPatientModal from "../AddPatientModal";
 import HealthRatingBar from "../HealthRatingBar";
 
 import patientService from "../../services/patients";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   patients : Patient[]
@@ -18,6 +19,8 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+
+  const navigate = useNavigate();
 
   const openModal = (): void => setModalOpen(true);
 
@@ -47,6 +50,10 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
     }
   };
 
+  const handleNavigate = (id: string) => {
+    navigate(`/${id}`);
+  };
+
   return (
     <div className="App">
       <Box>
@@ -65,7 +72,14 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
         </TableHead>
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
-            <TableRow key={patient.id}>
+            <TableRow 
+            onClick={() => handleNavigate(patient.id)} key={patient.id}
+            sx={{
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: '#f0f0f0',
+              },
+            }}>
               <TableCell>{patient.name}</TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
