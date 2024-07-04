@@ -10,20 +10,16 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    "max-len": ["warn", { "code": 120 }],
+    "@typescript-eslint/indent": ["warn", 2],
+    "@typescript-eslint/semi": ["error", "never"],
+    "@typescript-eslint/comma-dangle": ["error", "never"],
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/ban-types": "off",
+    "jsx-quotes": ["error", "prefer-single"],
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
-    "@typescript-eslint/semi": ["error"],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/restrict-plus-operands": "off",
-    "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_" }
-    ],
-    "no-case-declarations": "off"
   },
 }
